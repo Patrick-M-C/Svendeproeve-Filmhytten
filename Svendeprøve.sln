@@ -7,7 +7,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svendeprøve", "Svendeprøv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svendeprøve.Client", "Svendeprøve\Svendeprøve.Client\Svendeprøve.Client.csproj", "{10A5D89F-6138-415D-B93D-71F5E48F13C1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svendeprøve.Api", "Svendeprøve.Api\Svendeprøve.Api.csproj", "{2501AC36-D557-4B6B-A085-253725AE14B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svendeprøve.Api", "Svendeprøve.Api\Svendeprøve.Api.csproj", "{2501AC36-D557-4B6B-A085-253725AE14B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svendeprøve.Repo", "Svendeprøve.Repo\Svendeprøve.Repo.csproj", "{8E1C8DF2-DF5A-40DA-921E-18430B048C33}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{2501AC36-D557-4B6B-A085-253725AE14B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2501AC36-D557-4B6B-A085-253725AE14B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2501AC36-D557-4B6B-A085-253725AE14B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E1C8DF2-DF5A-40DA-921E-18430B048C33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E1C8DF2-DF5A-40DA-921E-18430B048C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E1C8DF2-DF5A-40DA-921E-18430B048C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E1C8DF2-DF5A-40DA-921E-18430B048C33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
