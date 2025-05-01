@@ -1,0 +1,6 @@
+@Svendeprøve.Api_HostAddress = http://localhost:5130
+
+GET {{Svendeprøve.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
