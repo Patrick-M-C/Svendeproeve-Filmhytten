@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Svendeprøve.Repo.Repository
+namespace Svendeprøve.Repo.Interface
 {
-    public class TicketRepository
+    public interface ITicket
     {
 
     }

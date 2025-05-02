@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Svendeprøve.Repo.Repository
+namespace Svendeprøve.Repo.DTO
 {
-    public class TicketRepository
+    public class Genre
     {
-
+        public int id { get; set; }
+        public string name { get; set; }
     }
 }
