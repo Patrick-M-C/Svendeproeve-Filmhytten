@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Svendeprøve.Repo.Repository
 {
@@ -16,34 +17,48 @@ namespace Svendeprøve.Repo.Repository
         {
             context = temp;
         }
-        public Task<Hall> create(Hall hall)
+        public async Task<List<Hall>> getAll()
         {
-            throw new NotImplementedException();
+            return await context.Hall.ToListAsync();
         }
 
-        public Task<Hall> delete(int id)
+        public async Task<List<Hall>> getAllIncludeSeats()
         {
-            throw new NotImplementedException();
+            return await context.Hall.Include(s => s.Seats).ToListAsync();
         }
 
-        public Task<List<Hall>> getAll()
+        public async Task<Hall> getById(int id)
         {
-            throw new NotImplementedException();
+            return await context.Hall.Include(s => s.Seats).FirstOrDefaultAsync(h => h.Id == id);
         }
 
-        public Task<List<Hall>> getAllIncludeSeats()
+        public async Task<Hall> create(Hall hall)
         {
-            throw new NotImplementedException();
+            context.Hall.Add(hall);
+            await context.SaveChangesAsync();
+
+            return hall;
         }
 
-        public Task<Hall> getById(int id)
+        public async Task<Hall> delete(int id)
         {
-            throw new NotImplementedException();
+            var hall = await context.Hall.FindAsync(id);
+            if (hall != null)
+            {
+                context.Hall.Remove(hall);
+                await context.SaveChangesAsync();
+            }
+            return hall;
         }
 
-        public Task<Hall> update(Hall updateHall)
+        public async Task<Hall> update(Hall updateHall)
         {
-            throw new NotImplementedException();
+            var HallUpdate = await context.Hall.FirstOrDefaultAsync(h => h.Id == updateHall.Id);
+            HallUpdate.Id = updateHall.Id;
+            HallUpdate.SeatCount = updateHall.SeatCount;
+
+            await context.SaveChangesAsync();
+            return HallUpdate;
         }
     }
 }

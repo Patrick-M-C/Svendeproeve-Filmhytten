@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
@@ -14,12 +13,12 @@ namespace Svendeprøve.Repo.Repository
     public class UserRepository : IUser
     {
         private readonly Databasecontext _context;
-        private readonly PasswordHasher<User> _passwordHasher;
+        //private readonly PasswordHasher<User> _passwordHasher;
 
         public UserRepository(Databasecontext context)
         {
             _context = context;
-            _passwordHasher = new PasswordHasher<User>();
+            //_passwordHasher = new PasswordHasher<User>();
         }
 
         public async Task<List<User>> GetAllAsync()
@@ -51,7 +50,7 @@ namespace Svendeprøve.Repo.Repository
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
 
-            user.Password = _passwordHasher.HashPassword(user, user.Password);
+            //user.Password = _passwordHasher.HashPassword(user, user.Password);
 
             _context.User.Add(user);
             await _context.SaveChangesAsync();
@@ -70,7 +69,7 @@ namespace Svendeprøve.Repo.Repository
             existingUser.PhoneNumber = user.PhoneNumber;
             //existingUser.Password = user.Password;
 
-            existingUser.Password = _passwordHasher.HashPassword(existingUser, user.Password);
+            //existingUser.Password = _passwordHasher.HashPassword(existingUser, user.Password);
 
             await _context.SaveChangesAsync();
             return existingUser;
