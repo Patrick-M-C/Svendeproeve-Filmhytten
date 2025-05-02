@@ -1,0 +1,97 @@
+﻿﻿@page "/seatsreservation"
+@using Svendeprøve.Components.Models
+@inject HttpClient Http
+
+<h3>Seats Reservation</h3>
+
+<div class="seat-layout">
+    @if (seats == null)
+    {
+        <p>Loading seats...</p>
+    }
+    else
+    {
+        foreach (var seatRow in groupedSeats)
+        {
+            <div class="seat-row">
+                @foreach (var seat in seatRow)
+                {
+                    <button class="@GetSeatClass(seat)"
+                            disabled="@seat.IsReserved"
+                            @onclick="() => ToggleSeatSelection(seat)">
+                        @seat.SeatNumber
+                    </button>
+                }
+            </div>
+        }
+    }
+</div>
+
+<button @onclick="ConfirmReservation" class="confirm-btn">Confirm Reservation</button>
+
+@code {
+    private List<Seat> seats;
+    private List<List<Seat>> groupedSeats = new List<List<Seat>>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadSeats();
+    }
+
+    private async Task LoadSeats()
+    {
+        try
+        {
+            seats = await Http.GetFromJsonAsync<List<Seat>>("https://localhost:7009/api/Seat");
+            GroupSeatsByRow();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching seats: {ex.Message}");
+        }
+    }
+
+    private void GroupSeatsByRow()
+    {
+        if (seats == null) return;
+
+        var grouped = seats.GroupBy(s => s.Row).OrderBy(g => g.Key);
+        groupedSeats = grouped.Select(g => g.ToList()).ToList();
+    }
+
+    private void ToggleSeatSelection(Seat seat)
+    {
+        if (!seat.IsReserved)
+        {
+            seat.IsReserved = true; // Mark seat as reserved temporarily
+        }
+    }
+
+    private async Task ConfirmReservation()
+    {
+        var selectedSeats = seats.Where(s => s.IsReserved).ToList();
+
+        try
+        {
+            var response = await Http.PostAsJsonAsync("https://localhost:7009/api/Seat/reserve", selectedSeats);
+            if (response.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Reservation successful!");
+            }
+            else
+            {
+                Console.WriteLine("Failed to reserve seats.");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error confirming reservation: {ex.Message}");
+        }
+    }
+
+    private string GetSeatClass(Seat seat)
+    {
+        if (seat.IsReserved) return "seat-reserved";
+        return "seat-available";
+    }
+}

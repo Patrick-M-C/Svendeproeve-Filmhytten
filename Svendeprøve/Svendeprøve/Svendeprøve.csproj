@@ -16,9 +16,4 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.11" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\Account\Pages\Movies\" />
-    <Folder Include="Components\Account\Pages\Seat\" />
-  </ItemGroup>
-
 </Project>
