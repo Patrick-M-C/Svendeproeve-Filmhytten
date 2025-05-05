@@ -1,0 +1,78 @@
+﻿﻿@page "/seats"
+@using Svendeprøve
+@using Svendeprøve.Components.Layout
+@using Svendeprøve.Components.Models
+
+<div class="page">
+    <div class="sidebar">
+        <NavMenu />
+    </div>
+
+    <main>
+        <article class="content px-4">
+            @foreach (var hall in TheaterLayout.Hall)
+            {
+                <div>
+                    <h4>Hall @hall.Name</h4>
+                    <div class="seat-hall">
+                        @foreach (var seat in hall.Seats)
+                        {
+                            <button class="@GetSeatClass(seat)"
+                                    disabled="@(seat.IsReserved)"
+                                    @onclick="() => ToggleSeatSelection(seat)"
+                                    @key="seat.Id">
+                                @seat.SeatNumber (@(seat.IsSelected ? "Selected" : "Available"))
+                            </button>
+                        }
+                    </div>
+                </div>
+            }
+        </article>
+    </main>
+</div>
+
+@code {
+    private TheaterLayout TheaterLayout { get; set; } = new TheaterLayout();
+
+    protected override void OnInitialized()
+    {
+        TheaterLayout = new TheaterLayout
+            {
+                Hall = new List<Hall>
+            {
+                new Hall
+                {
+                    Name = "Hal A",
+                    Seats = new List<Seat>
+                    {
+                        new Seat { Id = 1, SeatNumber = 1, IsReserved = false, IsSelected = false, Row = 1 },
+                        new Seat { Id = 2, SeatNumber = 2, IsReserved = false, IsSelected = false, Row = 1 },
+                        new Seat { Id = 3, SeatNumber = 3, IsReserved = true, IsSelected = false, Row = 2 }, // Reserveret sæde
+                        new Seat { Id = 4, SeatNumber = 4, IsReserved = false, IsSelected = false, Row = 1 },
+                        new Seat { Id = 5, SeatNumber = 5, IsReserved = false, IsSelected = false, Row = 1 },
+                        new Seat { Id = 6, SeatNumber = 6, IsReserved = true, IsSelected = false, Row = 2 } // Reserveret sæde
+                    }
+                }
+            }
+            };
+    }
+
+    private void ToggleSeatSelection(Seat seat)
+    {
+        if (!seat.IsReserved) // Kun toggle hvis sædet ikke er reserveret
+        {
+            seat.IsSelected = !seat.IsSelected;
+            Console.WriteLine($"Seat {seat.SeatNumber} selected: {seat.IsSelected}"); // Debug output
+            InvokeAsync(StateHasChanged); // UI-opdatering
+        }
+    }
+
+    private string GetSeatClass(Seat seat)
+    {
+        if (seat.IsReserved)
+            return "seat-reserved";
+        if (seat.IsSelected)
+            return "seat-selected";
+        return "seat-available";
+    }
+}

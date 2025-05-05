@@ -1,4 +1,4 @@
-﻿﻿@page "/halls"
+﻿@page "/halls"
 
 @using Svendeprøve.Components.Models
 @using Svendeprøve.Components.Services
@@ -8,25 +8,25 @@
 <h3>Halls</h3>
 @if (halls == null)
 {
-    <p>Loading...</p>
+	<p>Loading...</p>
 }
 else
 {
-    <ul>
-        @foreach (var hall in halls)
-        {
-            <li>
-                <a href="/halls/@hall.Id">@hall.Name</a>
-            </li>
-        }
-    </ul>
+	<ul>
+		@foreach (var hall in halls)
+		{
+			<li>
+				<a href="/halls/@hall.Id">@hall.Name</a>
+			</li>
+		}
+	</ul>
 }
 
 @code {
-    private List<Hall> halls;
+	private List<Hall> halls;
 
-    protected override async Task OnInitializedAsync()
-    {
-        halls = await HallService.GetHallsAsync();
-    }
+	protected override async Task OnInitializedAsync()
+	{
+		halls = await HallService.GetHallsAsync();
+	}
 }
