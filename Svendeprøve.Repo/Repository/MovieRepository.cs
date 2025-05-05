@@ -37,7 +37,7 @@ namespace Svendeprøve.Repo.Repository
             if (response.IsSuccessStatusCode)
             {
                 // Parse the response into TMDBMovieResponse object
-                //var tmdbResponse = await response.Content.ReadFromJsonAsync<TMDBMovieResponse>();
+                //var tmdbResponse = await response.Content.ReadFromJsonAsync<TMDBMovieResponse>(); // Removed
                 var tmdbResponse = await response.Content.ReadFromJsonAsync<TMDBResponse>();
                 if (tmdbResponse?.Results != null && tmdbResponse.Results.Any())
                 {

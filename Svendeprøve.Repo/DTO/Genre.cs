@@ -11,4 +11,5 @@ namespace Svendeprøve.Repo.DTO
         public int id { get; set; }
         public string name { get; set; }
     }
+
 }
