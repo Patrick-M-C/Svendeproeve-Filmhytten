@@ -1,0 +1,32 @@
+﻿﻿@page "/moviesss"
+
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+
+@inject MovieService MovieService
+
+<h3>Movies</h3>
+@if (movies == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+        @foreach (var movie in movies)
+        {
+            <li>
+                <a href="/movies/@movie.Id">@movie.Title</a>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<Movie> movies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movies = await MovieService.GetMoviesAsync();
+    }
+}

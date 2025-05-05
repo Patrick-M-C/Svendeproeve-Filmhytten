@@ -1,0 +1,111 @@
+﻿﻿@page "/hall"
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+@inject HallService HallService
+@inject NavigationManager NavigationManager
+
+<h1>Vælg en sal</h1>
+
+@if (halls == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="hall-container">
+        @foreach (var hall in halls)
+        {
+            <div class="hall" @onclick="() => NavigateToSeats(hall.Id)">
+                <div class="screen"></div>
+                <div class="seats" style="grid-template-columns: repeat(@GetColumns(hall.SeatCount), 10px);">
+                    @for (int i = 0; i < GetRows(hall.SeatCount * GetColumns(hall.SeatCount)); i++)
+                    {
+                        <div class="seat"></div>
+                    }
+                </div>
+                    <div class="hall-label">@hall.Name (@hall.SeatCount sæder)</div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Hall>? halls;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            halls = await HallService.GetHallsAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fejl ved hentning af haller: {ex.Message}");
+            halls = new List<Hall>(); // Fallback til tom liste
+        }
+    }
+
+    private void NavigateToSeats(int hallId)
+    {
+        NavigationManager.NavigateTo($"/seats/{hallId}");
+    }
+
+    private int GetRows(int totalSeats)
+    {
+        return 5; // Fast antal rækker for enkelhed
+    }
+
+    private int GetColumns(int totalSeats)
+    {
+        return totalSeats switch
+        {
+            50 => 10,
+            75 => 15,
+            100 => 20,
+            _ => 10 // Default fallback
+        };
+    }
+}
+
+<style>
+    .hall-container {
+        display: flex;
+        gap: 30px;
+        padding: 20px;
+        justify-content: center;
+    }
+
+    .hall {
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .hall:hover {
+            transform: scale(1.05);
+        }
+
+    .screen {
+        width: 80px;
+        height: 10px;
+        background-color: #666;
+        margin-bottom: 10px;
+    }
+
+    .seats {
+        display: grid;
+        gap: 2px;
+    }
+
+    .seat {
+        width: 10px;
+        height: 10px;
+        background-color: #90EE90;
+        border: 1px solid #ccc;
+    }
+
+    .hall-label {
+        margin-top: 5px;
+        font-family: Arial, sans-serif;
+    }
+</style>

@@ -1,0 +1,39 @@
+﻿@page "/halls/{Id:int}"
+
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+
+@inject HallService HallService
+
+<h3>Hall Details</h3>
+
+@if (hall == null)
+{
+	<p>Loading...</p>
+}
+else
+{
+	<div>
+		<h2>@hall.Name</h2>
+		<p><strong>Capacity:</strong> @hall.Seats</p>
+		<p><strong>Description:</strong> @hall.Name</p>
+	</div>
+}
+
+@code {
+	[Parameter] public int Id { get; set; }
+
+	private Hall hall;
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			hall = await HallService.GetHallByIdAsync(Id);
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Error Fetching Hall Details: {ex.Message}");
+		}
+	}
+}

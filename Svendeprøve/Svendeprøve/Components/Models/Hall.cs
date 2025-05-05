@@ -1,31 +1,12 @@
 ﻿namespace Svendeprøve.Components.Models
 {
-    public class Movie
-    {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public List<Genre> Genres { get; set; }
-        public string Genre { get; set; }
-        public string overview { get; set; }
-        public int Runtime { get; set; }
-        public double vote_average { get; set; }
-        public string release_date { get; set; }
-        public string poster_path { get; set; }
-    }
-
-    public class TMDBResponse
-    {
-        public List<Movie> Results { get; set; }
-    }
-
-    public class Genre
+    public class Hall
     {
         public int Id { get; set; }
         public string Name { get; set; }
+        public int SeatCount { get; set; }
+        public List<Seat> Seats { get; set; }
+
     }
 
-    public class GenreResponse
-    {
-        public List<Genre> Genres { get; set; }
-    }
 }

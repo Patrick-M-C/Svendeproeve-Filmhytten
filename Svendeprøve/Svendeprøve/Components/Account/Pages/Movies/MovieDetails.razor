@@ -1,0 +1,40 @@
+﻿@page "/movies/{Id:int}"
+
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+
+@inject MovieService MovieService
+
+<h3>Movie Details</h3>
+
+@if (movie == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div>
+        <h2>@movie.Title</h2>
+        <p><strong>Release Year:</strong> @movie.release_date</p>
+        <p><strong>Description:</strong> @movie.overview</p>
+    </div>
+}
+
+@code {
+    [Parameter] public int Id { get; set; } // Henter {Id} fra URL
+
+    private Movie movie;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Hent detaljerne for den valgte film
+            movie = await MovieService.GetMovieByIdAsync(Id);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching movie details: {ex.Message}");
+        }
+    }
+}
