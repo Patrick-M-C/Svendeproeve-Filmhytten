@@ -3,9 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svendeprøve", "Svendeprøve\Svendeprøve\Svendeprøve.csproj", "{AAF5681B-9A28-4299-9788-F933DF5C6954}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svendeprøve", "Svendeprøve\Svendeprøve\Svendeprøve.csproj", "{AAF5681B-9A28-4299-9788-F933DF5C6954}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svendeprøve.Client", "Svendeprøve\Svendeprøve.Client\Svendeprøve.Client.csproj", "{10A5D89F-6138-415D-B93D-71F5E48F13C1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svendeprøve.Client", "Svendeprøve\Svendeprøve.Client\Svendeprøve.Client.csproj", "{10A5D89F-6138-415D-B93D-71F5E48F13C1}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svendeprøve.Api", "Svendeprøve.Api\Svendeprøve.Api.csproj", "{2501AC36-D557-4B6B-A085-253725AE14B2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Svendeprøve.Repo", "Svendeprøve.Repo\Svendeprøve.Repo.csproj", "{8E1C8DF2-DF5A-40DA-921E-18430B048C33}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Svendeprøve.Tests", "Svendeprøve.Tests\Svendeprøve.Tests.csproj", "{4DEF444A-A47B-41E0-A052-609733195F9D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,8 +27,23 @@ Global
 		{10A5D89F-6138-415D-B93D-71F5E48F13C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{10A5D89F-6138-415D-B93D-71F5E48F13C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{10A5D89F-6138-415D-B93D-71F5E48F13C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2501AC36-D557-4B6B-A085-253725AE14B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2501AC36-D557-4B6B-A085-253725AE14B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2501AC36-D557-4B6B-A085-253725AE14B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2501AC36-D557-4B6B-A085-253725AE14B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E1C8DF2-DF5A-40DA-921E-18430B048C33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E1C8DF2-DF5A-40DA-921E-18430B048C33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E1C8DF2-DF5A-40DA-921E-18430B048C33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E1C8DF2-DF5A-40DA-921E-18430B048C33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4DEF444A-A47B-41E0-A052-609733195F9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4DEF444A-A47B-41E0-A052-609733195F9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4DEF444A-A47B-41E0-A052-609733195F9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4DEF444A-A47B-41E0-A052-609733195F9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {583423BC-8FB4-4079-BC70-618234F59587}
 	EndGlobalSection
 EndGlobal
