@@ -1,25 +1,80 @@
-﻿namespace FilmHytten.Components.Services
+﻿namespace Svendeprøve.Components.Services
 {
-    using Svendeprøve.Components.Models;
-    using System.Net.Http.Json;
+    using Microsoft.AspNetCore.Identity;
+    using Svendeprøve.Data;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
 
+    /// <summary>
+    /// Service til håndtering af brugeroperationer (CRUD) med ASP.NET Core Identity.
+    /// </summary>
     public class UserService
     {
-        private readonly HttpClient _httpClient;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserService(HttpClient httpClient)
+        /// <summary>
+        /// Initialiserer en ny instans af UserService med en UserManager.
+        /// </summary>
+        /// <param name="userManager">UserManager til håndtering af ApplicationUser.</param>
+        public UserService(UserManager<ApplicationUser> userManager)
         {
-            _httpClient = httpClient;
+            _userManager = userManager;
         }
 
-        public async Task<List<User>> GetUsersAsync()
+        /// <summary>
+        /// Henter en liste over alle brugere.
+        /// </summary>
+        /// <returns>En liste af ApplicationUser.</returns>
+        public async Task<List<ApplicationUser>> GetAllUsersAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<User>>("api/User");
+            return await Task.FromResult(_userManager.Users.ToList());
         }
 
-        public async Task<User> GetUserByIdAsync(int id)
+        /// <summary>
+        /// Opretter en ny bruger med angivet email og adgangskode.
+        /// </summary>
+        /// <param name="email">Brugerens email.</param>
+        /// <param name="password">Brugerens adgangskode.</param>
+        /// <returns>Resultatet af oprettelsesoperationen.</returns>
+        public async Task<IdentityResult> CreateUserAsync(string email, string password)
         {
-            return await _httpClient.GetFromJsonAsync<User>($"api/User/{id}");
+            var user = new ApplicationUser { UserName = email, Email = email };
+            return await _userManager.CreateAsync(user, password);
+        }
+
+        /// <summary>
+        /// Opdaterer en eksisterende brugers email.
+        /// </summary>
+        /// <param name="userId">ID for brugeren, der skal opdateres.</param>
+        /// <param name="newEmail">Ny email for brugeren.</param>
+        /// <returns>Resultatet af opdateringsoperationen.</returns>
+        public async Task<IdentityResult> UpdateUserAsync(string userId, string newEmail)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Bruger ikke fundet" });
+            }
+
+            user.UserName = newEmail;
+            user.Email = newEmail;
+            return await _userManager.UpdateAsync(user);
+        }
+
+        /// <summary>
+        /// Sletter en bruger baseret på deres ID.
+        /// </summary>
+        /// <param name="userId">ID for brugeren, der skal slettes.</param>
+        /// <returns>Resultatet af sletteoperationen.</returns>
+        public async Task<IdentityResult> DeleteUserAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return IdentityResult.Failed(new IdentityError { Description = "Bruger ikke fundet" });
+            }
+
+            return await _userManager.DeleteAsync(user);
         }
     }
 }
