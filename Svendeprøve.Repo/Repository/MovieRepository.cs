@@ -32,45 +32,66 @@ namespace Svendeprøve.Repo.Repository
 
         public async Task<IEnumerable<Movie>> GetAllMoviesAsync()
         {
-            // Fetch the list of movies using the TMDB discover endpoint
-            var response = await _httpClient.GetAsync($"{_baseUrl}/discover/movie?api_key={_apiKey}");
-            if (response.IsSuccessStatusCode)
+            const int maxMovies = 100;
+            const int requestDelayMilliseconds = 21;
+            const int moviesPerPage = 20;
+
+            var movies = new List<Movie>();
+            var genreMappings = await _dbContext.Set<Genre>()
+                .ToDictionaryAsync(g => g.id, g => g.name);
+
+            int totalFetched = 0;
+            int page = 1;
+
+            while (totalFetched < maxMovies)
             {
-                // Parse the response into TMDBMovieResponse object
-                //var tmdbResponse = await response.Content.ReadFromJsonAsync<TMDBMovieResponse>(); // Removed
-                var tmdbResponse = await response.Content.ReadFromJsonAsync<TMDBResponse>();
-                if (tmdbResponse?.Results != null && tmdbResponse.Results.Any())
+                var response = await _httpClient.GetAsync($"{_baseUrl}/discover/movie?api_key={_apiKey}&page={page}");
+                if (!response.IsSuccessStatusCode)
                 {
-                    // Fetch genre mappings from the database
-                    var genreMappings = await _dbContext.Set<Genre>()
-                        .ToDictionaryAsync(g => g.id, g => g.name);
-
-                    // Map TMDBMovie to your Movie model
-                    return tmdbResponse.Results.Select(tmdbMovie => new Movie
-                    {
-                        Id = tmdbMovie.Id,
-                        Title = tmdbMovie.Title,
-                        //Converting GenreIds into  readable genre names
-                        Genres = tmdbMovie.genre_ids != null && tmdbMovie.genre_ids.Any()
-                            ? tmdbMovie.genre_ids.Where(id => genreMappings.ContainsKey(id))
-                        .Select(id => new Genre { id = id, name = genreMappings[id] })
-                        .ToList()
-                        : new List<Genre>(),
-
-                        // Create a comma-separated string for Genre
-                        Genre = tmdbMovie.genre_ids != null && tmdbMovie.genre_ids.Any()
-                            ? string.Join(", ", tmdbMovie.genre_ids.Select(id => genreMappings.ContainsKey(id) ? genreMappings[id] : "Unknown"))
-                            : "Unknown",
-                        overview = string.IsNullOrWhiteSpace(tmdbMovie.overview) ? "No description available" : tmdbMovie.overview,
-                        vote_average = tmdbMovie.vote_average,
-                        release_date = string.IsNullOrEmpty(tmdbMovie.release_date) ? "Unknown" : tmdbMovie.release_date,
-                        poster_path = string.IsNullOrEmpty(tmdbMovie.poster_path) ? "No image available" : $"{_posterBaseUrl}{tmdbMovie.poster_path}"
-                    }).ToList();
+                    Console.WriteLine($"Error fetching page {page}: {response.StatusCode}");
+                    break;
                 }
+
+                var tmdbResponse = await response.Content.ReadFromJsonAsync<TMDBResponse>();
+                if (tmdbResponse?.Results == null || !tmdbResponse.Results.Any())
+                {
+                    break; // No more results
+                }
+
+                var batchMovies = tmdbResponse.Results.Select(tmdbMovie => new Movie
+                {
+                    Id = tmdbMovie.Id,
+                    Title = tmdbMovie.Title,
+                    Genres = tmdbMovie.genre_ids != null && tmdbMovie.genre_ids.Any()
+                        ? tmdbMovie.genre_ids.Where(id => genreMappings.ContainsKey(id))
+                            .Select(id => new Genre { id = id, name = genreMappings[id] })
+                            .ToList()
+                        : new List<Genre>(),
+                    Genre = tmdbMovie.genre_ids != null && tmdbMovie.genre_ids.Any()
+                        ? string.Join(", ", tmdbMovie.genre_ids.Select(id => genreMappings.ContainsKey(id) ? genreMappings[id] : "Unknown"))
+                        : "Unknown",
+                    overview = string.IsNullOrWhiteSpace(tmdbMovie.overview) ? "No description available" : tmdbMovie.overview,
+                    vote_average = tmdbMovie.vote_average,
+                    release_date = string.IsNullOrEmpty(tmdbMovie.release_date) ? "Unknown" : tmdbMovie.release_date,
+                    poster_path = string.IsNullOrEmpty(tmdbMovie.poster_path) ? "No image available" : $"{_posterBaseUrl}{tmdbMovie.poster_path}"
+                }).ToList();
+
+                movies.AddRange(batchMovies);
+                totalFetched += batchMovies.Count;
+
+                if (totalFetched >= maxMovies)
+                {
+                    movies = movies.Take(maxMovies).ToList();
+                    break;
+                }
+
+                page++;
+                await Task.Delay(requestDelayMilliseconds);
             }
-            // Return an empty list if the response is unsuccessful or empty
-            return Enumerable.Empty<Movie>();
+
+            return movies;
         }
+
 
         public Task<IEnumerable<Movie>> GetAllMoviesratelimitAsync()
         {

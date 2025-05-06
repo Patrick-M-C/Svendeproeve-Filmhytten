@@ -10,11 +10,12 @@ namespace Svendeprøve.Repo.DatabaseContext
 {
     public class Databasecontext : DbContext
     {
-        public Databasecontext(DbContextOptions<Databasecontext> option) : base(option) { }
+        public Databasecontext(DbContextOptions<Databasecontext> options) : base(options) { }
         public DbSet<Hall> Hall { get; set; }
         public DbSet<Seat> Seat { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Ticket> Ticket { get; set; }
+        public DbSet<Genre> Genre { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
