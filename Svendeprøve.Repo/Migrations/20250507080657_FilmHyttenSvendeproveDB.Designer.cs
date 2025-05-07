@@ -11,8 +11,8 @@ using Svendeprøve.Repo.DatabaseContext;
 namespace Svendeprøve.Repo.Migrations
 {
     [DbContext(typeof(Databasecontext))]
-    [Migration("20250506134755_genreinitial")]
-    partial class genreinitial
+    [Migration("20250507080657_FilmHyttenSvendeproveDB")]
+    partial class FilmHyttenSvendeproveDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

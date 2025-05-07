@@ -20,9 +20,10 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, PersistingRevalidatingAuthenticationStateProvider>();
 builder.Services.AddScoped<MovieService>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<SeatService>();
 builder.Services.AddScoped<HallService>();
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7009") });
+builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7149") });
 
 builder.Services.AddAuthentication(options =>
 {
