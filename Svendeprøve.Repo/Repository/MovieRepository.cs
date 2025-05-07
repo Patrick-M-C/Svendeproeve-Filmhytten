@@ -55,7 +55,7 @@ namespace Svendeprøve.Repo.Repository
                 var tmdbResponse = await response.Content.ReadFromJsonAsync<TMDBResponse>();
                 if (tmdbResponse?.Results == null || !tmdbResponse.Results.Any())
                 {
-                    break; // No more results
+                    break;
                 }
 
                 var batchMovies = tmdbResponse.Results.Select(tmdbMovie => new Movie
