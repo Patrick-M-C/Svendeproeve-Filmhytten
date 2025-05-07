@@ -153,6 +153,26 @@ namespace Svendeprøve.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Hall");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Hall 1",
+                            SeatCount = 9
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Hall 2",
+                            SeatCount = 4
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Hall 3",
+                            SeatCount = 4
+                        });
                 });
 
             modelBuilder.Entity("Svendeprøve.Repo.DTO.Seat", b =>
@@ -180,6 +200,144 @@ namespace Svendeprøve.Repo.Migrations
                     b.HasIndex("HallId");
 
                     b.ToTable("Seat");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            HallId = 1,
+                            IsReserved = false,
+                            Row = 1,
+                            SeatNumber = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            HallId = 1,
+                            IsReserved = false,
+                            Row = 1,
+                            SeatNumber = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            HallId = 1,
+                            IsReserved = false,
+                            Row = 1,
+                            SeatNumber = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            HallId = 1,
+                            IsReserved = false,
+                            Row = 2,
+                            SeatNumber = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            HallId = 1,
+                            IsReserved = false,
+                            Row = 2,
+                            SeatNumber = 5
+                        },
+                        new
+                        {
+                            Id = 6,
+                            HallId = 1,
+                            IsReserved = false,
+                            Row = 2,
+                            SeatNumber = 6
+                        },
+                        new
+                        {
+                            Id = 7,
+                            HallId = 1,
+                            IsReserved = true,
+                            Row = 3,
+                            SeatNumber = 7
+                        },
+                        new
+                        {
+                            Id = 8,
+                            HallId = 1,
+                            IsReserved = true,
+                            Row = 3,
+                            SeatNumber = 8
+                        },
+                        new
+                        {
+                            Id = 9,
+                            HallId = 1,
+                            IsReserved = false,
+                            Row = 3,
+                            SeatNumber = 9
+                        },
+                        new
+                        {
+                            Id = 10,
+                            HallId = 2,
+                            IsReserved = false,
+                            Row = 1,
+                            SeatNumber = 1
+                        },
+                        new
+                        {
+                            Id = 11,
+                            HallId = 2,
+                            IsReserved = true,
+                            Row = 1,
+                            SeatNumber = 2
+                        },
+                        new
+                        {
+                            Id = 12,
+                            HallId = 2,
+                            IsReserved = false,
+                            Row = 2,
+                            SeatNumber = 3
+                        },
+                        new
+                        {
+                            Id = 13,
+                            HallId = 2,
+                            IsReserved = false,
+                            Row = 2,
+                            SeatNumber = 4
+                        },
+                        new
+                        {
+                            Id = 14,
+                            HallId = 3,
+                            IsReserved = true,
+                            Row = 1,
+                            SeatNumber = 1
+                        },
+                        new
+                        {
+                            Id = 15,
+                            HallId = 3,
+                            IsReserved = false,
+                            Row = 1,
+                            SeatNumber = 2
+                        },
+                        new
+                        {
+                            Id = 16,
+                            HallId = 3,
+                            IsReserved = false,
+                            Row = 2,
+                            SeatNumber = 3
+                        },
+                        new
+                        {
+                            Id = 17,
+                            HallId = 3,
+                            IsReserved = false,
+                            Row = 2,
+                            SeatNumber = 4
+                        });
                 });
 
             modelBuilder.Entity("Svendeprøve.Repo.DTO.Ticket", b =>
@@ -196,9 +354,6 @@ namespace Svendeprøve.Repo.Migrations
                     b.Property<int>("Price")
                         .HasColumnType("int");
 
-                    b.Property<int>("ScreeningId")
-                        .HasColumnType("int");
-
                     b.Property<int>("SeatId")
                         .HasColumnType("int");
 
@@ -207,9 +362,45 @@ namespace Svendeprøve.Repo.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("SeatId");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("Ticket");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            IsCanceled = false,
+                            Price = 75,
+                            SeatId = 1,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            IsCanceled = false,
+                            Price = 75,
+                            SeatId = 2,
+                            UserId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            IsCanceled = false,
+                            Price = 95,
+                            SeatId = 4,
+                            UserId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            IsCanceled = true,
+                            Price = 75,
+                            SeatId = 4,
+                            UserId = 2
+                        });
                 });
 
             modelBuilder.Entity("Svendeprøve.Repo.DTO.User", b =>
@@ -239,6 +430,24 @@ namespace Svendeprøve.Repo.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Email = "kasper@mail.com",
+                            Name = "Kasper",
+                            Password = "placeholder1",
+                            PhoneNumber = "123456789"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Email = "sofia@mail.com",
+                            Name = "Sofia",
+                            Password = "placeholder2",
+                            PhoneNumber = "987654321"
+                        });
                 });
 
             modelBuilder.Entity("Svendeprøve.Repo.DTO.Seat", b =>
@@ -252,11 +461,21 @@ namespace Svendeprøve.Repo.Migrations
 
             modelBuilder.Entity("Svendeprøve.Repo.DTO.Ticket", b =>
                 {
-                    b.HasOne("Svendeprøve.Repo.DTO.User", null)
+                    b.HasOne("Svendeprøve.Repo.DTO.Seat", "Seat")
+                        .WithMany()
+                        .HasForeignKey("SeatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Svendeprøve.Repo.DTO.User", "User")
                         .WithMany("Tickets")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Seat");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Svendeprøve.Repo.DTO.Hall", b =>

@@ -42,7 +42,7 @@ namespace Svendeprøve.Repo.Repository
             TicketUpdate.Price = updateTicket.Price;
             TicketUpdate.UserId = updateTicket.UserId;
             TicketUpdate.SeatId = updateTicket.SeatId;
-            TicketUpdate.ScreeningId = updateTicket.ScreeningId;
+            //TicketUpdate.ScreeningId = updateTicket.ScreeningId;
             TicketUpdate.IsCanceled = updateTicket.IsCanceled;
 
             await context.SaveChangesAsync();

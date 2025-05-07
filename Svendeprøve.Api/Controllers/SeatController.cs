@@ -6,27 +6,29 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Api.Controllers
 {
-    public class SeatController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class SeatController : ControllerBase
     {
-        private readonly Databasecontext context;
+        private readonly Databasecontext _context;
         private readonly ISeat _seatRepo;
 
         public SeatController(Databasecontext context, ISeat seatRepo)
         {
-            context = context;
+            _context = context;
             _seatRepo = seatRepo;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Seat>>> GetSeats()
         {
-            return await context.Seat.ToListAsync();
+            return await _context.Seat.ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Seat>> GetSeat(int id)
         {
-            var seat = await context.Seat.FindAsync(id);
+            var seat = await _context.Seat.FindAsync(id);
 
             if (seat == null)
             {
@@ -39,30 +41,26 @@ namespace Svendeprøve.Api.Controllers
         [HttpGet("ByHall/{hallId}")]
         public async Task<ActionResult<IEnumerable<Seat>>> GetSeatsByHall(int hallId)
         {
-            return await context.Seat.Where(s => s.HallId == hallId).ToListAsync();
+            return await _context.Seat.Where(s => s.HallId == hallId).ToListAsync();
         }
 
         [HttpPost]
         public async Task<ActionResult<Seat>> CreateSeat(Seat seat)
         {
-            context.Seat.Add(seat);
-            await context.SaveChangesAsync();
+            _context.Seat.Add(seat);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetSeat), new { id = seat.Id }, seat);
         }
 
-        [HttpGet("isreserved/{seatId}")]
-        public async Task<ActionResult<bool>> IsSeatReserved(int seatId)
+        [HttpGet("isReserved")]
+        public async Task<ActionResult<IEnumerable<Seat>>> GetReservedSeats()
         {
-            try
-            {
-                bool isReserved = await _seatRepo.IsSeatReservedAsync(seatId);
-                return Ok(isReserved);
-            }
-            catch (KeyNotFoundException ex)
-            {
-                return NotFound(ex.Message); // 404 if seat is not found
-            }
+            var reservedSeats = await _context.Seat
+                .Where(s => s.IsReserved == true)
+                .ToListAsync();
+
+            return Ok(reservedSeats);
         }
 
         [HttpPut("{id}")]
@@ -73,11 +71,11 @@ namespace Svendeprøve.Api.Controllers
                 return BadRequest();
             }
 
-            context.Entry(seat).State = EntityState.Modified;
+            _context.Entry(seat).State = EntityState.Modified;
 
             try
             {
-                await context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -97,21 +95,21 @@ namespace Svendeprøve.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSeat(int id)
         {
-            var seat = await context.Seat.FindAsync(id);
+            var seat = await _context.Seat.FindAsync(id);
             if (seat == null)
             {
                 return NotFound();
             }
 
-            context.Seat.Remove(seat);
-            await context.SaveChangesAsync();
+            _context.Seat.Remove(seat);
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
         private bool SeatExists(int id)
         {
-            return context.Seat.Any(e => e.Id == id);
+            return _context.Seat.Any(e => e.Id == id);
         }
     }
 }
