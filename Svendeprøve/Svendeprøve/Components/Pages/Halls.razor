@@ -1,4 +1,4 @@
-﻿﻿@page "/hall"
+﻿@page "/Hall"
 @using Svendeprøve.Components.Models
 @using Svendeprøve.Components.Services
 @inject HallService HallService
@@ -8,7 +8,11 @@
 
 @if (halls == null)
 {
-    <p>Loading...</p>
+    <p>Loading.....</p>
+}
+else if (!halls.Any() && errorMessage != null)
+{
+    <p>Fejl: @errorMessage</p>
 }
 else
 {
@@ -17,13 +21,13 @@ else
         {
             <div class="hall" @onclick="() => NavigateToSeats(hall.Id)">
                 <div class="screen"></div>
-                <div class="seats" style="grid-template-columns: repeat(@GetColumns(hall.SeatCount), 10px);">
-                    @for (int i = 0; i < GetRows(hall.SeatCount * GetColumns(hall.SeatCount)); i++)
+                <div class="seats" style="grid-template-columns: repeat(@GetColumns(hall.Seats), 15px);">
+                    @foreach (var seat in hall.Seats.OrderBy(s => s.Row).ThenBy(s => s.SeatNumber))
                     {
-                        <div class="seat"></div>
+                        <div class="seat @(seat.IsReserved ? "reserved" : "")"></div>
                     }
                 </div>
-                    <div class="hall-label">@hall.Name (@hall.SeatCount sæder)</div>
+                <div class="hall-label">@hall.Name (@hall.SeatCount sæder)</div>
             </div>
         }
     </div>
@@ -31,6 +35,7 @@ else
 
 @code {
     private List<Hall>? halls;
+    private string? errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,10 +43,17 @@ else
         {
             halls = await HallService.GetHallsAsync();
         }
+        catch (HttpRequestException ex)
+        {
+            errorMessage = $"Kunne ikke hente haller: {ex.Message}";
+            Console.WriteLine(errorMessage);
+            halls = new List<Hall>();
+        }
         catch (Exception ex)
         {
-            Console.WriteLine($"Fejl ved hentning af haller: {ex.Message}");
-            halls = new List<Hall>(); // Fallback til tom liste
+            errorMessage = $"Uventet fejl: {ex.Message}";
+            Console.WriteLine(errorMessage);
+            halls = new List<Hall>();
         }
     }
 
@@ -50,20 +62,9 @@ else
         NavigationManager.NavigateTo($"/seats/{hallId}");
     }
 
-    private int GetRows(int totalSeats)
+    private int GetColumns(List<Seat> seats)
     {
-        return 5; // Fast antal rækker for enkelhed
-    }
-
-    private int GetColumns(int totalSeats)
-    {
-        return totalSeats switch
-        {
-            50 => 10,
-            75 => 15,
-            100 => 20,
-            _ => 10 // Default fallback
-        };
+        return seats.GroupBy(s => s.Row).Max(g => g.Count());
     }
 }
 
