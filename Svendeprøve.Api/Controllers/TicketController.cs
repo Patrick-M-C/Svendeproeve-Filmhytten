@@ -54,7 +54,7 @@ namespace Svendeprøve.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, Ticket ticket)
+        public async Task<IActionResult> UpdateTicket(int id, Ticket ticket)
         {
             if (id != ticket.Id)
             {
