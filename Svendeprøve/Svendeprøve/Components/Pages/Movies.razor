@@ -12,8 +12,9 @@
                 <img src="@item.poster_path" class="card-img-top" @onclick="() => ShowPopup(item.Id)" />
                 <div class="card-body">
                     <div class="card-title">
-                        <h5>Movie name: @item.Title</h5>
-                        <h6>ReleaseDate: @item.release_date</h6>
+                        <h5>@item.Title</h5>
+                        <h6>Release Date </h6>
+                        <h6>@item.release_date</h6>
                     </div>
                 </div>
             </div>
@@ -114,6 +115,7 @@
 
     .card-body {
         padding: 1rem;
+        text-align: center;
     }
 
     .overlaypopup {

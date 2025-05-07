@@ -7,7 +7,7 @@
 namespace Svendeprøve.Repo.Migrations
 {
     /// <inheritdoc />
-    public partial class genreinitial : Migration
+    public partial class FilmHyttenSvendeproveDB : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

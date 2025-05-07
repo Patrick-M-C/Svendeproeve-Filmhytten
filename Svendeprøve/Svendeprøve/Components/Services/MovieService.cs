@@ -12,7 +12,7 @@
         public MovieService(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _httpClient.BaseAddress = new Uri("https://localhost:7009/");
+            _httpClient.BaseAddress = new Uri("https://localhost:7149/");
         }
 
         public async Task<List<Movie>> GetMoviesAsync()
