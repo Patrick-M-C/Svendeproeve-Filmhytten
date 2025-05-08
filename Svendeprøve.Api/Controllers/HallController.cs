@@ -6,15 +6,17 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Api.Controllers
 {
-    public class HallController : Controller
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HallController : ControllerBase
     {
         private readonly Databasecontext _context;
-        IHall Hall { get; set; }
+        private readonly IHall _hallRepo;
 
         public HallController(Databasecontext context, IHall hall)
         {
             _context = context;
-            this.Hall = hall;
+            _hallRepo = hall;
         }
 
         [HttpGet]
