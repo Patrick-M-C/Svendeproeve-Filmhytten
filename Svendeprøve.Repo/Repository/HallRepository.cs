@@ -34,6 +34,9 @@ namespace Svendeprøve.Repo.Repository
 
         public async Task<Hall> create(Hall hall)
         {
+            if (hall == null)
+                throw new ArgumentNullException(nameof(hall));
+
             context.Hall.Add(hall);
             await context.SaveChangesAsync();
 
@@ -54,6 +57,8 @@ namespace Svendeprøve.Repo.Repository
         public async Task<Hall> update(Hall updateHall)
         {
             var HallUpdate = await context.Hall.FirstOrDefaultAsync(h => h.Id == updateHall.Id);
+            if (HallUpdate == null) return null;
+
             HallUpdate.Id = updateHall.Id;
             HallUpdate.SeatCount = updateHall.SeatCount;
 
