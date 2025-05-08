@@ -24,6 +24,12 @@ namespace Svendeprøve.Api.Controllers
         {
             return await _context.Hall.ToListAsync();
         }
+        
+        [HttpGet("withSeat")]
+        public async Task<ActionResult<IEnumerable<Hall>>> GetHallsWithSeats()
+        {
+            return await _context.Hall.Include(h => h.Seats).ToListAsync();
+        }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Hall>> GetHallbyid(int id)
@@ -38,7 +44,7 @@ namespace Svendeprøve.Api.Controllers
             return hall;
         }
 
-        [HttpGet("withseat{id}")]
+        [HttpGet("withseat/{id}")]
         public async Task<ActionResult<Hall>> GetHallWithSeatsbyid(int id)
         {
             var hall = await _context.Hall.Include(h => h.Seats).FirstOrDefaultAsync(h => h.Id == id);
