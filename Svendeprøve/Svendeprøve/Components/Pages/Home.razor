@@ -1,7 +1,101 @@
 ﻿@page "/"
 
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+@inject MovieService MovieService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
 <PageTitle>Home</PageTitle>
 
 <h1>Velkommen til Filmhytten!</h1>
+<p>Her kan du se 5 tilfældige film i din nærmeste biograf</p>
 
-Her kan du se de 5 nuværtgående film i din nærmeste biograf
+@if (movies == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div id="movieCarousel" class="carousel slide carousel-container" data-bs-ride="carousel" data-bs-interval="3000">
+        <div class="carousel-indicators">
+            @for (int i = 0; i < movies.Count; i++)
+            {
+                <button type="button"
+                data-bs-target="#movieCarousel"
+                data-bs-slide-to="@i"
+                class="@(i == 0 ? "active" : "")"
+                aria-current="@(i == 0 ? "true" : "false")"
+                aria-label="Slide @(i + 1)"></button>
+            }
+        </div>
+        <div class="carousel-inner">
+            @for (int i = 0; i < movies.Count; i++)
+            {
+                var movie = movies[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <img src="@movie.poster_path" class="d-block w-100 carousel-img" alt="@movie.Title" />
+                    <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-50 rounded p-2">
+                        <h5>@movie.Title</h5>
+                        <p>@movie.overview</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div class="navigation-buttons mt-4">
+    <a href="/movies" class="btn">Movies</a>
+    <a href="/halls" class="btn">Halls</a>
+    <a href="/seats" class="btn">Seats</a>
+
+</div>
+
+@code {
+    private List<Movie>? movies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allMovies = await MovieService.GetMoviesAsync();
+        var random = new Random();
+        movies = allMovies.OrderBy(x => random.Next()).Take(5).ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && movies != null && movies.Any()) ;
+    }
+
+}
+
+<style>
+    .carousel-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .carousel-img {
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .carousel-caption {
+        bottom: 20px;
+    }
+
+    .navigation-buttons .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin-right: 10px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+        .navigation-buttons .btn:hover {
+            background-color: #0056b3;
+        }
+</style>
+

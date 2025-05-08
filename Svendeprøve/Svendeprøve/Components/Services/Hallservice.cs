@@ -17,7 +17,7 @@
         {
             try
             {
-                var response = await _httpClient.GetAsync("api/Hall/GetHallsWithSeats");
+                var response = await _httpClient.GetAsync("api/Hall/withSeat");
                 response.EnsureSuccessStatusCode();
                 var json = await response.Content.ReadAsStringAsync();
                 Console.WriteLine($"Raw JSON: {json}"); // Log rå JSON for fejlfinding
