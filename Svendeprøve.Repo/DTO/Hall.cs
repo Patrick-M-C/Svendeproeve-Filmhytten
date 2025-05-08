@@ -1,4 +1,6 @@
-﻿namespace Svendeprøve.Repo.DTO
+﻿using System.Text.Json.Serialization;
+
+namespace Svendeprøve.Repo.DTO
 {
     public class Hall
     {

@@ -19,14 +19,16 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 
 builder.Services.AddScoped<IMovie, MovieRepository>();
-//builder.Services.AddScoped<IHall, HallRepository>();
-//builder.Services.AddScoped<ISeat, SeatRepository>();
-//builder.Services.AddScoped<IUser, UserRepository>();
-//builder.Services.AddScoped<ITicket, TicketRepository>();
+builder.Services.AddScoped<IHall, HallRepository>();
+builder.Services.AddScoped<ISeat, SeatRepository>();
+builder.Services.AddScoped<IUser, UserRepository>();
+builder.Services.AddScoped<ITicket, TicketRepository>();
 
 
 builder.Services.AddHttpClient<IMovie, MovieRepository>();
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

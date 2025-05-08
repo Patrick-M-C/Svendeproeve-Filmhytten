@@ -6,32 +6,31 @@ using Svendeprøve.Repo.DTO;
 
 namespace Svendeprøve.Api.Controllers
 {
+    [ApiController]
+    [Route("api/[controller]")]
     public class UserController : Controller
     {
         private readonly Databasecontext _context;
-        private readonly IPasswordHasher<User> _passwordHasher;
+        //private readonly IPasswordHasher<User> _passwordHasher;
 
-        public UserController(Databasecontext context, IPasswordHasher<User> passwordHasher)
+        public UserController(Databasecontext context /*, IPasswordHasher<User> passwordHasher*/)
         {
             _context = context;
-            _passwordHasher = passwordHasher;
+            //_passwordHasher = passwordHasher;
         }
 
-        // GET: api/User
         [HttpGet]
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             return await _context.User.ToListAsync();
         }
 
-        // GET: api/User
         [HttpGet("withTickets")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsersIncludeTickets()
         {
             return await _context.User.Include(u => u.Tickets).ToListAsync();
         }
 
-        // GET: api/User/{id} 
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id)
         {
@@ -44,14 +43,13 @@ namespace Svendeprøve.Api.Controllers
             return user;
         }
 
-        // POST: api/User
         [HttpPost]
         public async Task<ActionResult<User>> CreateUser(User user)
         {
             if (user == null) return BadRequest("User cannot be null.");
 
             user.Tickets = null;
-            user.Password = _passwordHasher.HashPassword(user, user.Password);
+            //user.Password = _passwordHasher.HashPassword(user, user.Password);
 
             _context.User.Add(user);
             await _context.SaveChangesAsync();
@@ -59,7 +57,6 @@ namespace Svendeprøve.Api.Controllers
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
         }
 
-        // PUT: api/User/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, User user)
         {
@@ -74,12 +71,11 @@ namespace Svendeprøve.Api.Controllers
                 return NotFound();
             }
 
-            // Update user properties
             existingUser.Name = user.Name;
             existingUser.Email = user.Email;
             existingUser.PhoneNumber = user.PhoneNumber;
 
-            existingUser.Password = _passwordHasher.HashPassword(user, user.Password);
+            //existingUser.Password = _passwordHasher.HashPassword(user, user.Password);
 
             try
             {
@@ -99,7 +95,6 @@ namespace Svendeprøve.Api.Controllers
             return NoContent();
         }
 
-        // DELETE: api/User/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
