@@ -53,6 +53,20 @@ namespace Svendeprøve.Api.Controllers
             return CreatedAtAction(nameof(GetSeat), new { id = seat.Id }, seat);
         }
 
+        [HttpPost("multiple")]
+        public async Task<ActionResult<IEnumerable<Seat>>> CreateMultipleSeats(
+        [FromQuery] int rows,
+        [FromQuery] int seatsPerRow,
+        [FromQuery] int hallId)
+        {
+            if (rows <= 0 || seatsPerRow <= 0)
+                return BadRequest("Rows and seats per row must be greater than 0.");
+
+            var seats = await _seatRepo.CreateMultipleAsync(rows, seatsPerRow, hallId);
+
+            return Ok(seats);
+        }
+
         [HttpGet("isReserved")]
         public async Task<ActionResult<IEnumerable<Seat>>> GetReservedSeats()
         {

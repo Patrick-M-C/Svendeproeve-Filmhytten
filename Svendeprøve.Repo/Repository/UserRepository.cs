@@ -67,7 +67,7 @@ namespace Svendeprøve.Repo.Repository
             existingUser.Name = user.Name;
             existingUser.Email = user.Email;
             existingUser.PhoneNumber = user.PhoneNumber;
-            //existingUser.Password = user.Password;
+            existingUser.Password = user.Password;
 
             //existingUser.Password = _passwordHasher.HashPassword(existingUser, user.Password);
 

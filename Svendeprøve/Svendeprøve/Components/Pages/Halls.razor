@@ -67,7 +67,7 @@ else
 
     private void NavigateToSeats(int hallId)
     {
-        NavigationManager.NavigateTo($"/Seats");
+        NavigationManager.NavigateTo($"/Seats?hallId={hallId}");
     }
 
     private int GetColumns(List<Seat> seats)
