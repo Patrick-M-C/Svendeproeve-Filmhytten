@@ -125,3 +125,26 @@ button {
         height: auto;
         border-radius: 5px;
     }
+
+.carousel-img {
+    height: 500px;
+    object-fit: cover;
+}
+
+.carousel-caption {
+    bottom: 20px;
+}
+
+.navigation-buttons .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-right: 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+    .navigation-buttons .btn:hover {
+        background-color: #0056b3;
+    }

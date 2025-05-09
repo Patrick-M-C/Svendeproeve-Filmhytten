@@ -1,7 +1,85 @@
 ﻿@page "/"
 
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+@inject MovieService MovieService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+
 <PageTitle>Home</PageTitle>
 
-<h1>Velkommen til Filmhytten!</h1>
+<h1 class="text-center mt-4">Velkommen til Filmhytten!</h1>
+<p class="text-center">Her kan du se 5 tilfældige film i din nærmeste biograf</p>
 
-Her kan du se de 5 nuværtgående film i din nærmeste biograf
+@if (movies == null)
+{
+    <p class="text-center">Loading.....</p>
+}
+else
+{
+    <div id="movieAccordion" class="accordion mx-auto" style="max-width: 800px;">
+        @for (int i = 0; i < movies.Count; i++)
+        {
+            var movie = movies[i];
+            var collapseId = $"collapse{i}";
+            var headingId = $"heading{i}";
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="@headingId">
+                    <button class="accordion-button @(i != 0 ? "collapsed" : "")"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#@collapseId"
+                            aria-expanded="@(i == 0 ? "true" : "false")"
+                            aria-controls="@collapseId">
+                        @movie.Title
+                    </button>
+                </h2>
+                <div id="@collapseId"
+                     class="accordion-collapse collapse @(i == 0 ? "show" : "")"
+                     aria-labelledby="@headingId"
+                     data-bs-parent="#movieAccordion">
+                    <div class="accordion-body">
+                        <img src="@movie.poster_path" class="d-block mx-auto img-fluid" alt="@movie.Title" style="max-height: 400px;" />
+                        <p>@movie.overview</p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Movie>? movies;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var allMovies = await MovieService.GetMoviesAsync();
+        var random = new Random();
+        movies = allMovies.OrderBy(x => random.Next()).Take(5).ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Kald JavaScript-funktionen her
+            await JS.InvokeVoidAsync("initializeAccordion");
+        }
+    }
+}
+
+<style>
+    .navigation-buttons .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        margin: 0 10px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+    }
+
+        .navigation-buttons .btn:hover {
+            background-color: #0056b3;
+        }
+</style>
