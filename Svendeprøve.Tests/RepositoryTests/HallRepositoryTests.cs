@@ -27,7 +27,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         }
 
         [Fact]
-        public async void GetAllHallsAsync_ShouldReturnListOfHall_WhenHallExists()
+        public async Task GetAllHallsAsync_ShouldReturnListOfHall_WhenHallExists()
         {
             // Arrange
             await _context.Database.EnsureDeletedAsync();
@@ -47,7 +47,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         }
 
         [Fact]
-        public async void GetAllHallsAsync_ShouldReturnStringName_WhenHallExists()
+        public async Task GetAllHallsAsync_ShouldReturnStringName_WhenHallExists()
         {
             // Arrange
             await _context.Database.EnsureDeletedAsync();
@@ -73,7 +73,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         }
 
         [Fact]
-        public async void GetAllHallsAsync_ShouldReturnIntSeatCount_WhenHallExists()
+        public async Task GetAllHallsAsync_ShouldReturnIntSeatCount_WhenHallExists()
         {
             // Arrange
             await _context.Database.EnsureDeletedAsync();
