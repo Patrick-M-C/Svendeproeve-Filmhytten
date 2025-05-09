@@ -1,0 +1,120 @@
+﻿@page "/Hall"
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@rendermode InteractiveServer
+@inject HallService HallService
+@inject NavigationManager NavigationManager
+
+<h1>Vælg en sal</h1>
+
+@if (halls == null)
+{
+    <p>Loading.....</p>
+}
+else if (!halls.Any() && errorMessage != null)
+{
+    <p>Fejl: @errorMessage</p>
+}
+else
+{
+    <div class="hall-container">
+        @foreach (var hall in halls)
+        {
+            <div class="hall" @onclick="() => NavigateToSeats(hall.Id)">
+                <div class="screen"></div>
+                <div class="seats" style="grid-template-columns: repeat(@GetColumns(hall.Seats), 15px);">
+                    @foreach (var seat in hall.Seats.OrderBy(s => s.Row).ThenBy(s => s.SeatNumber))
+                    {
+                        <div class="seat @(seat.IsReserved ? "reserved" : "")"></div>
+                    }
+                </div>
+                <div class="hall-label">@hall.Name (@hall.SeatCount sæder)</div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<Hall>? halls;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            halls = await HallService.GetHallsAsync();
+        }
+        catch (HttpRequestException ex)
+        {
+            errorMessage = $"Kunne ikke hente haller: {ex.Message}";
+            Console.WriteLine(errorMessage);
+            halls = new List<Hall>();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Uventet fejl: {ex.Message}";
+            Console.WriteLine(errorMessage);
+            halls = new List<Hall>();
+        }
+    }
+
+    private void NavigateToSeats(int hallId)
+    {
+        NavigationManager.NavigateTo($"/Seats");
+    }
+
+    private int GetColumns(List<Seat> seats)
+    {
+        return seats.GroupBy(s => s.Row).Max(g => g.Count());
+    }
+}
+
+<style>
+    .hall-container {
+        display: flex;
+        gap: 30px;
+        padding: 20px;
+        justify-content: center;
+    }
+
+    .hall {
+        text-align: center;
+        cursor: pointer;
+        transition: transform 0.2s;
+    }
+
+        .hall:hover {
+            transform: scale(1.05);
+        }
+
+    .screen {
+        width: 80px;
+        height: 10px;
+        background-color: #666;
+        margin-bottom: 10px;
+    }
+
+    .seats {
+        display: grid;
+        gap: 2px;
+    }
+
+    .seat {
+        width: 10px;
+        height: 10px;
+        background-color: #90EE90;
+        border: 1px solid #ccc;
+    }
+
+    .hall-label {
+        margin-top: 5px;
+        font-family: Arial, sans-serif;
+    }
+</style>

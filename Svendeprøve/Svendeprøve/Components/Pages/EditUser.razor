@@ -1,0 +1,80 @@
+﻿@page "/admin/edit/{UserId}"
+@using Microsoft.AspNetCore.Authorization
+@using Svendeprøve.Components.Services
+@attribute [Authorize(Roles = "Admin")]
+
+@inject UserService UserService
+@inject NavigationManager Navigation
+
+<h3>Rediger bruger</h3>
+
+@if (user == null)
+{
+    <p>Indlæser...</p>
+}
+else
+{
+    <EditForm OnValidSubmit="UpdateUser">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="form-group mb-3">
+            <label>Email:</label>
+            <InputText class="form-control" @bind-Value="user.Email" />
+        </div>
+
+        <button type="submit" class="btn btn-primary me-2">Gem</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Annuller</button>
+    </EditForm>
+
+    @if (!string.IsNullOrEmpty(message))
+    {
+        <div class="alert alert-info mt-3">@message</div>
+    }
+}
+
+@code {
+    [Parameter]
+    public string UserId { get; set; }
+
+    private UserModel user;
+    private string message;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var identityUsers = await UserService.GetAllUsersAsync();
+        var selectedUser = identityUsers.FirstOrDefault(u => u.Id == UserId);
+        if (selectedUser != null)
+        {
+            user = new UserModel
+                {
+                    Id = selectedUser.Id,
+                    Email = selectedUser.Email
+                };
+        }
+    }
+
+    private async Task UpdateUser()
+    {
+        var result = await UserService.UpdateUserAsync(user.Id, user.Email);
+        if (result.Succeeded)
+        {
+            message = "Bruger opdateret succesfuldt!";
+        }
+        else
+        {
+            message = string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+    }
+
+    private void Cancel()
+    {
+        Navigation.NavigateTo("/admin");
+    }
+
+    private class UserModel
+    {
+        public string Id { get; set; }
+        public string Email { get; set; }
+    }
+}

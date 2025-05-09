@@ -1,0 +1,32 @@
+﻿@page "/halls"
+
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+
+@inject HallService HallService
+
+<h3>Halls</h3>
+@if (halls == null)
+{
+	<p>Loading...</p>
+}
+else
+{
+	<ul>
+		@foreach (var hall in halls)
+		{
+			<li>
+				<a href="/halls/@hall.Id">@hall.Name</a>
+			</li>
+		}
+	</ul>
+}
+
+@code {
+	private List<Hall> halls;
+
+	protected override async Task OnInitializedAsync()
+	{
+		halls = await HallService.GetHallsAsync();
+	}
+}
