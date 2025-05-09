@@ -1,0 +1,71 @@
+﻿@page "/Confirmation"
+@using System.Timers
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+@implements IDisposable
+
+<div class="confirmation-container">
+    <h1 class="text-center">Køb af Billet bekræftede, Tak fordi købte igennem Filmhytten</h1>
+    <p class="text-center">Du vil blive omdirigeret om @remainingSeconds sekunder...</p>
+</div>
+
+@code {
+    private int remainingSeconds = 5;
+    private Timer? timer;
+
+    protected override void OnInitialized()
+    {
+        timer = new Timer(1000); // Opdater hvert sekund
+        timer.Elapsed += async (sender, e) => await OnTimerElapsed();
+        timer.AutoReset = true; // Kør gentagne gange
+        timer.Start();
+    }
+
+    private async Task OnTimerElapsed()
+    {
+        remainingSeconds--;
+
+        if (remainingSeconds <= 0)
+        {
+            timer?.Stop();
+            await InvokeAsync(() =>
+            {
+                NavigationManager.NavigateTo("/movies");
+            });
+        }
+        else
+        {
+            // Opdater UI med resterende sekunder
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    public void Dispose()
+    {
+        // Rengør timeren
+        timer?.Stop();
+        timer?.Dispose();
+    }
+}
+
+<style>
+    .confirmation-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 1.2rem;
+        color: #666;
+    }
+</style>
