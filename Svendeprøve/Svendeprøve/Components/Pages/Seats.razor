@@ -5,24 +5,42 @@
 @inject HallService HallService
 @inject NavigationManager NavigationManager
 
-<h1>Bekræft din booking</h1>
+<h1>Sæder i hal</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
     <p class="text-center text-danger">@errorMessage</p>
 }
 
-@if (hall == null)
+@if (hall == null || seats == null)
 {
-    <p class="text-center">Indlæser hal...</p>
+    <p class="text-center">Indlæser sæder...</p>
 }
 else
 {
     <div class="hall-container">
         <div class="hall">
-            <h3>@hall.Name</h3>
-            <p>@availableSeats ud af @hall.SeatCount sæder er tilgængelige.</p>
+            <h3>@hall.Name (@hall.SeatCount sæder)</h3>
+            <div class="screen"></div>
+            <!-- Række- og sædenumre -->
+            <div class="seat-labels">
+                <div class="row-labels">
+                    @foreach (var row in seats.Select(s => s.Row).Distinct().OrderBy(r => r))
+                    {
+                        <div class="row-label">Række @row</div>
+                    }
+                </div>
+                <div class="seats" style="grid-template-columns: repeat(@GetColumns(seats), 30px);">
+                    @foreach (var seat in seats.OrderBy(s => s.Row).ThenBy(s => s.SeatNumber))
+                    {
+                        <div class="seat @(seat.IsReserved ? "reserved" : "available")"
+                             title="Række @seat.Row, Sæde @seat.SeatNumber">
+                        </div>
+                    }
+                </div>
+            </div>
             <div class="seat-info">
+                <p>@seats.Count(s => !s.IsReserved) ud af @hall.SeatCount sæder er tilgængelige.</p>
                 <button class="btn btn-primary" @onclick="ConfirmBooking">Bekræft Booking</button>
             </div>
         </div>
@@ -31,26 +49,17 @@ else
 
 @code {
     private Hall? hall;
-    private int availableSeats;
+    private List<Seat>? seats;
     private string? errorMessage;
-    private int? movieId;
     private int? hallId;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            // Hent movieId og hallId fra query-parametre
+            // Hent hallId fra query-parameter
             var uri = new Uri(NavigationManager.Uri);
             var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
-
-            if (query["movieId"] == null || !int.TryParse(query["movieId"], out var parsedMovieId))
-            {
-                errorMessage = "Ingen film valgt. Gå tilbage og vælg en film.";
-                Console.WriteLine(errorMessage);
-                return;
-            }
-            movieId = parsedMovieId;
 
             if (query["hallId"] == null || !int.TryParse(query["hallId"], out var parsedHallId))
             {
@@ -66,6 +75,7 @@ else
             {
                 errorMessage = "Ingen haller fundet i databasen.";
                 Console.WriteLine(errorMessage);
+                seats = new List<Seat>();
                 return;
             }
 
@@ -75,22 +85,32 @@ else
             {
                 errorMessage = $"Hal med ID {hallId} blev ikke fundet.";
                 Console.WriteLine(errorMessage);
+                seats = new List<Seat>();
                 return;
             }
 
-            // Beregn tilgængelige sæder
-            availableSeats = hall.Seats.Count(s => !s.IsReserved);
-            Console.WriteLine($"Loaded hall: {hall.Name} (ID: {hall.Id}) with {availableSeats} available seats out of {hall.SeatCount} for movie ID: {movieId}");
+            seats = hall.Seats;
+            if (!seats.Any())
+            {
+                errorMessage = $"Ingen sæder fundet for hal {hall.Name}.";
+                Console.WriteLine(errorMessage);
+            }
+            else
+            {
+                Console.WriteLine($"Loaded hall: {hall.Name} (ID: {hall.Id}) with {seats.Count} seats, {seats.Count(s => !s.IsReserved)} available");
+            }
         }
         catch (HttpRequestException ex)
         {
-            errorMessage = $"Kunne ikke hente hal: {ex.Message}";
+            errorMessage = $"Kunne ikke hente sæder: {ex.Message}";
             Console.WriteLine(errorMessage);
+            seats = new List<Seat>();
         }
         catch (Exception ex)
         {
             errorMessage = $"Uventet fejl: {ex.Message}";
             Console.WriteLine(errorMessage);
+            seats = new List<Seat>();
         }
     }
 
@@ -98,13 +118,6 @@ else
     {
         try
         {
-            if (movieId == null)
-            {
-                errorMessage = "Ingen film valgt.";
-                Console.WriteLine(errorMessage);
-                return;
-            }
-
             if (hall == null)
             {
                 errorMessage = "Ingen hal valgt.";
@@ -112,7 +125,7 @@ else
                 return;
             }
 
-            if (availableSeats == 0)
+            if (seats == null || !seats.Any(s => !s.IsReserved))
             {
                 errorMessage = "Ingen tilgængelige sæder i denne hal.";
                 Console.WriteLine(errorMessage);
@@ -120,11 +133,10 @@ else
             }
 
             // Hypotetisk kald til at reservere en plads (skal implementeres i HallService)
-            // await HallService.ReserveSeatsAsync(hall.Id, movieId.Value, numberOfSeats: 1);
-            Console.WriteLine($"Booking confirmed for movie ID: {movieId}, hall ID: {hall.Id}, 1 seat reserved");
+            // await HallService.ReserveSeatsAsync(hall.Id, numberOfSeats: 1);
+            Console.WriteLine($"Booking confirmed for hall ID: {hall.Id}, 1 seat reserved");
 
-            // Naviger tilbage til filmoversigten eller til en bekræftelsesside
-            NavigationManager.NavigateTo("/movies");
+            // Ingen navigation, da /Confirmation ikke findes endnu
             errorMessage = null;
             StateHasChanged();
         }
@@ -134,6 +146,11 @@ else
             Console.WriteLine(errorMessage);
             StateHasChanged();
         }
+    }
+
+    private int GetColumns(List<Seat> seats)
+    {
+        return seats.Any() ? seats.GroupBy(s => s.Row).Max(g => g.Count()) : 1;
     }
 }
 
@@ -147,6 +164,52 @@ else
     .hall {
         text-align: center;
     }
+
+    .screen {
+        width: 300px;
+        height: 20px;
+        background-color: #666;
+        margin: 0 auto 20px;
+    }
+
+    .seat-labels {
+        display: flex;
+    }
+
+    .row-labels {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin-right: 10px;
+    }
+
+    .row-label {
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .seats {
+        display: grid;
+        gap: 5px;
+        justify-content: center;
+    }
+
+    .seat {
+        width: 30px;
+        height: 30px;
+        border: 1px solid #ccc;
+        transition: all 0.2s ease;
+    }
+
+        .seat.available {
+            background-color: #90EE90; /* Ledige sæder (grøn) */
+        }
+
+        .seat.reserved {
+            background-color: #ff5555; /* Reserverede sæder (rød) */
+        }
 
     .seat-info {
         margin-top: 20px;
