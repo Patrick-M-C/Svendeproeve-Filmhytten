@@ -19,7 +19,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public HallRepositoryTests()
         {
             _options = new DbContextOptionsBuilder<Databasecontext>()
-                .UseInMemoryDatabase(databaseName: "HeroRepositoryTests")
+                .UseInMemoryDatabase(databaseName: "HallRepositoryTests")
                 .Options;
 
             _context = new(_options);
