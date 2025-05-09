@@ -1,4 +1,4 @@
-﻿namespace FilmHytten.Components.Services
+﻿namespace Svendeprøve.Components.Services
 {
     using Svendeprøve.Components.Models;
     using System.Net.Http.Json;

@@ -1,78 +1,171 @@
-﻿@page "/seats"
-@using Svendeprøve
-@using Svendeprøve.Components.Layout
+﻿@page "/Seats"
 @using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
+@rendermode InteractiveServer
+@inject HallService HallService
+@inject NavigationManager NavigationManager
 
-<div class="page">
-    <div class="sidebar">
-        <NavMenu />
+<h1>Bekræft din booking</h1>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p class="text-center text-danger">@errorMessage</p>
+}
+
+@if (hall == null)
+{
+    <p class="text-center">Indlæser hal...</p>
+}
+else
+{
+    <div class="hall-container">
+        <div class="hall">
+            <h3>@hall.Name</h3>
+            <p>@availableSeats ud af @hall.SeatCount sæder er tilgængelige.</p>
+            <div class="seat-info">
+                <button class="btn btn-primary" @onclick="ConfirmBooking">Bekræft Booking</button>
+            </div>
+        </div>
     </div>
-
-    <main>
-        <article class="content px-4">
-            @foreach (var hall in TheaterLayout.Hall)
-            {
-                <div>
-                    <h4>Hall @hall.Name</h4>
-                    <div class="seat-hall">
-                        @foreach (var seat in hall.Seats)
-                        {
-                            <button class="@GetSeatClass(seat)"
-                                    disabled="@(seat.IsReserved)"
-                                    @onclick="() => ToggleSeatSelection(seat)"
-                                    @key="seat.Id">
-                                @seat.SeatNumber (@(seat.IsSelected ? "Selected" : "Available"))
-                            </button>
-                        }
-                    </div>
-                </div>
-            }
-        </article>
-    </main>
-</div>
+}
 
 @code {
-    private TheaterLayout TheaterLayout { get; set; } = new TheaterLayout();
+    private Hall? hall;
+    private int availableSeats;
+    private string? errorMessage;
+    private int? movieId;
+    private int? hallId;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        TheaterLayout = new TheaterLayout
-            {
-                Hall = new List<Hall>
-            {
-                new Hall
-                {
-                    Name = "Hal A",
-                    Seats = new List<Seat>
-                    {
-                        new Seat { Id = 1, SeatNumber = 1, IsReserved = false, IsSelected = false, Row = 1 },
-                        new Seat { Id = 2, SeatNumber = 2, IsReserved = false, IsSelected = false, Row = 1 },
-                        new Seat { Id = 3, SeatNumber = 3, IsReserved = true, IsSelected = false, Row = 2 }, // Reserveret sæde
-                        new Seat { Id = 4, SeatNumber = 4, IsReserved = false, IsSelected = false, Row = 1 },
-                        new Seat { Id = 5, SeatNumber = 5, IsReserved = false, IsSelected = false, Row = 1 },
-                        new Seat { Id = 6, SeatNumber = 6, IsReserved = true, IsSelected = false, Row = 2 } // Reserveret sæde
-                    }
-                }
-            }
-            };
-    }
-
-    private void ToggleSeatSelection(Seat seat)
-    {
-        if (!seat.IsReserved) // Kun toggle hvis sædet ikke er reserveret
+        try
         {
-            seat.IsSelected = !seat.IsSelected;
-            Console.WriteLine($"Seat {seat.SeatNumber} selected: {seat.IsSelected}"); // Debug output
-            InvokeAsync(StateHasChanged); // UI-opdatering
+            // Hent movieId og hallId fra query-parametre
+            var uri = new Uri(NavigationManager.Uri);
+            var query = System.Web.HttpUtility.ParseQueryString(uri.Query);
+
+            if (query["movieId"] == null || !int.TryParse(query["movieId"], out var parsedMovieId))
+            {
+                errorMessage = "Ingen film valgt. Gå tilbage og vælg en film.";
+                Console.WriteLine(errorMessage);
+                return;
+            }
+            movieId = parsedMovieId;
+
+            if (query["hallId"] == null || !int.TryParse(query["hallId"], out var parsedHallId))
+            {
+                errorMessage = "Ingen hal valgt. Angiv en hal.";
+                Console.WriteLine(errorMessage);
+                return;
+            }
+            hallId = parsedHallId;
+
+            // Hent haller fra databasen
+            var halls = await HallService.GetHallsAsync();
+            if (!halls.Any())
+            {
+                errorMessage = "Ingen haller fundet i databasen.";
+                Console.WriteLine(errorMessage);
+                return;
+            }
+
+            // Vælg hal baseret på hallId
+            hall = halls.FirstOrDefault(h => h.Id == hallId);
+            if (hall == null)
+            {
+                errorMessage = $"Hal med ID {hallId} blev ikke fundet.";
+                Console.WriteLine(errorMessage);
+                return;
+            }
+
+            // Beregn tilgængelige sæder
+            availableSeats = hall.Seats.Count(s => !s.IsReserved);
+            Console.WriteLine($"Loaded hall: {hall.Name} (ID: {hall.Id}) with {availableSeats} available seats out of {hall.SeatCount} for movie ID: {movieId}");
+        }
+        catch (HttpRequestException ex)
+        {
+            errorMessage = $"Kunne ikke hente hal: {ex.Message}";
+            Console.WriteLine(errorMessage);
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Uventet fejl: {ex.Message}";
+            Console.WriteLine(errorMessage);
         }
     }
 
-    private string GetSeatClass(Seat seat)
+    private async Task ConfirmBooking()
     {
-        if (seat.IsReserved)
-            return "seat-reserved";
-        if (seat.IsSelected)
-            return "seat-selected";
-        return "seat-available";
+        try
+        {
+            if (movieId == null)
+            {
+                errorMessage = "Ingen film valgt.";
+                Console.WriteLine(errorMessage);
+                return;
+            }
+
+            if (hall == null)
+            {
+                errorMessage = "Ingen hal valgt.";
+                Console.WriteLine(errorMessage);
+                return;
+            }
+
+            if (availableSeats == 0)
+            {
+                errorMessage = "Ingen tilgængelige sæder i denne hal.";
+                Console.WriteLine(errorMessage);
+                return;
+            }
+
+            // Hypotetisk kald til at reservere en plads (skal implementeres i HallService)
+            // await HallService.ReserveSeatsAsync(hall.Id, movieId.Value, numberOfSeats: 1);
+            Console.WriteLine($"Booking confirmed for movie ID: {movieId}, hall ID: {hall.Id}, 1 seat reserved");
+
+            // Naviger tilbage til filmoversigten eller til en bekræftelsesside
+            NavigationManager.NavigateTo("/movies");
+            errorMessage = null;
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Fejl ved bekræftelse af booking: {ex.Message}";
+            Console.WriteLine(errorMessage);
+            StateHasChanged();
+        }
     }
 }
+
+<style>
+    .hall-container {
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .hall {
+        text-align: center;
+    }
+
+    .seat-info {
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .btn-primary {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    .text-danger {
+        color: #dc3545; /* Bootstrap rød farve til fejl */
+    }
+</style>

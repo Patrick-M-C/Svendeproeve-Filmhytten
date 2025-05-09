@@ -4,6 +4,7 @@
 @using Svendeprøve.Components.Services
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <PageTitle>Home</PageTitle>
 
@@ -12,7 +13,7 @@
 
 @if (movies == null)
 {
-    <p class="text-center">Loading...</p>
+    <p class="text-center">Loading.....</p>
 }
 else
 {
@@ -38,8 +39,7 @@ else
                      aria-labelledby="@headingId"
                      data-bs-parent="#movieAccordion">
                     <div class="accordion-body">
-                        <img src="@movie.poster_path" alt="@movie.Title"
-                             class="img-fluid mb-2" style="max-height: 400px; object-fit: cover;" />
+                        <img src="@movie.poster_path" class="d-block mx-auto img-fluid" alt="@movie.Title" style="max-height: 400px;" />
                         <p>@movie.overview</p>
                     </div>
                 </div>
@@ -47,12 +47,6 @@ else
         }
     </div>
 }
-
-<div class="navigation-buttons text-center mt-4">
-    <a href="/movies" class="btn">Movies</a>
-    <a href="/halls" class="btn">Halls</a>
-    <a href="/seats" class="btn">Seats</a>
-</div>
 
 @code {
     private List<Movie>? movies;
@@ -62,6 +56,15 @@ else
         var allMovies = await MovieService.GetMoviesAsync();
         var random = new Random();
         movies = allMovies.OrderBy(x => random.Next()).Take(5).ToList();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Kald JavaScript-funktionen her
+            await JS.InvokeVoidAsync("initializeAccordion");
+        }
     }
 }
 

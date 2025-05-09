@@ -1,4 +1,4 @@
-using FilmHytten.Components.Services;
+using Svendeprøve.Components.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -31,6 +31,10 @@ builder.Services.AddAuthentication(options =>
     options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 })
 .AddIdentityCookies();
+
+builder.Services.AddRazorComponents()
+.AddInteractiveServerComponents()
+.AddInteractiveWebAssemblyComponents();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

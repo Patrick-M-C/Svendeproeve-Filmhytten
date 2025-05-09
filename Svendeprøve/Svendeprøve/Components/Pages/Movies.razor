@@ -1,89 +1,128 @@
 ﻿@page "/movies"
 @using Svendeprøve.Components.Models
 @using Svendeprøve.Components.Services
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@rendermode InteractiveServer
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
 
-<div class="row row-cols-1 row-cols-md-6 g-3">
-    @foreach (var item in movies)
-    {
-        <div class="col-sm-5">
-            <div class="card h-50 w-75">
-                <img src="@item.poster_path" class="card-img-top" @onclick="() => ShowPopup(item.Id)" />
-                <div class="card-body">
-                    <div class="card-title">
-                        <h5>@item.Title</h5>
-                        <h6>Release Date </h6>
-                        <h6>@item.release_date</h6>
+<!-- Bestil Billet knap øverst til højre -->
+<div class="booking-button-container">
+    <button type="button" class="btn btn-primary btn-lg" @onclick="GoToBooking">Bestil Billet</button>
+</div>
+
+<h2 class="text-center mb-4">Filmoversigt</h2>
+
+@if (!string.IsNullOrEmpty(errorMessage))
+{
+    <p class="text-center text-danger">@errorMessage</p>
+}
+
+@if (pagedMovies == null)
+{
+    <p class="text-center">Indlæser film...</p>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-6 g-3 justify-content-center">
+        @foreach (var item in pagedMovies)
+        {
+            <div class="col-sm-5">
+                <div class="card h-50 w-75 @(selectedMovieId == item.Id ? "highlight" : "")">
+                    <img src="@item.poster_path" class="card-img-top" @onclick="() => HighlightMovie(item.Id)" />
+                    <div class="card-body">
+                        <div class="card-title text-center">
+                            <h5>@item.Title</h5>
+                            <h6>Release Date</h6>
+                            <h6>@item.release_date</h6>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
-
-@if (popup)
-{
-    <div class="overlaypopup">
-        <div class="popup">
-            <h2 class="popupTitle">@movieData.Title</h2>
-            <div class="gridWrapperPopup">
-                <img class="popupImg" src="@movieData.poster_path" />
-                <div class="popupDesc">
-                    Udkom i år: @movieData.release_date
-                    <br /> Filmen er @movieData.Runtime Minutter Lang.
-                    <button class="popupBut" @onclick="BuyTicket">Køb Billet</button>
-                </div>
-                <a class="close" @onclick="() => popup = false">×</a>
-            </div>
-        </div>
+        }
     </div>
 }
 
 @code {
-    private List<Movie> movies = new();
-    private Movie? movieData;
-    private bool popup = false;
-    private string? errorMessage;
+    private List<Movie> allMovies = new();
+    private List<Movie> pagedMovies = new();
+    private int? selectedMovieId = null;
+    private string? errorMessage = null;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            movies = await MovieService.GetMoviesAsync();
-        }
-        catch (HttpRequestException ex)
-        {
-            errorMessage = $"Kunne ikke hente film: {ex.Message}";
-            Console.WriteLine(errorMessage);
-            movies = new List<Movie>();
+            allMovies = await MovieService.GetMoviesAsync();
+            pagedMovies = allMovies;
+            Console.WriteLine($"Loaded {allMovies.Count} movies");
         }
         catch (Exception ex)
         {
-            errorMessage = $"Uventet fejl: {ex.Message}";
-            Console.WriteLine(errorMessage);
-            movies = new List<Movie>();
+            Console.WriteLine($"Error loading movies: {ex.Message}");
+            errorMessage = "Kunne ikke indlæse film. Prøv igen senere.";
         }
     }
 
-    private async Task ShowPopup(int movieId)
+    private void HighlightMovie(int movieId)
     {
-        movieData = await MovieService.GetMovieByIdAsync(movieId);
-        popup = true;
-    }
-
-    private void BuyTicket()
-    {
-        // Eksempel: Naviger til en købsside eller hall-valg
-        if (movieData != null)
+        try
         {
-            NavigationManager.NavigateTo($"/hall?movieId={movieData.Id}");
+            selectedMovieId = movieId; // Sæt den valgte film
+            errorMessage = null; // Ryd eventuelle fejlmeddelelser
+            Console.WriteLine($"Selected movie ID: {movieId}");
+            StateHasChanged();
         }
-        popup = false; // Luk popup efter klik
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error highlighting movie: {ex.Message}");
+            selectedMovieId = null;
+            errorMessage = "Fejl ved valg af film.";
+            StateHasChanged();
+        }
+    }
+
+    private void GoToBooking()
+    {
+        try
+        {
+            if (selectedMovieId == null)
+            {
+                errorMessage = "Vælg venligst en film før du bestiller.";
+                Console.WriteLine("No movie selected for booking");
+                StateHasChanged();
+                return;
+            }
+
+            Console.WriteLine($"Navigating to /Hall with movie ID: {selectedMovieId}");
+            NavigationManager.NavigateTo("/Hall");
+            selectedMovieId = null; // Nulstil highlight efter navigation
+            errorMessage = null; // Ryd eventuelle fejlmeddelelser
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error in GoToBooking: {ex.Message}");
+            errorMessage = "Fejl ved bestilling. Prøv igen.";
+            StateHasChanged();
+        }
     }
 }
 
 <style>
+    .booking-button-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
     .row {
         display: flex;
         flex-wrap: wrap;
@@ -98,7 +137,7 @@
         flex: 0 0 16.666667%;
     }
 
-    .col-sm-3 {
+    .col-sm-5 {
         flex: 0 0 25%;
         max-width: 25%;
     }
@@ -106,7 +145,13 @@
     .card {
         border: 1px solid #ccc;
         border-radius: 5px;
+        transition: all 0.2s ease;
     }
+
+        .card.highlight {
+            border: 2px solid #007bff;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
 
     .card-img-top {
         width: 100%;
@@ -118,68 +163,7 @@
         text-align: center;
     }
 
-    .overlaypopup {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .popup {
-        background: white;
-        padding: 20px;
-        border-radius: 5px;
-        position: relative;
-        width: 500px;
-        max-width: 90%;
-    }
-
-    .popupTitle {
-        margin-top: 0;
-    }
-
-    .gridWrapperPopup {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        gap: 20px;
-    }
-
-    .popupImg {
-        width: 100%;
-        max-width: 150px;
-    }
-
-    .popupDesc {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .popupBut {
-        padding: 10px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-
-        .popupBut:hover {
-            background-color: #0056b3;
-        }
-
-    .close {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        font-size: 24px;
-        cursor: pointer;
-        text-decoration: none;
-        color: #000;
+    .text-danger {
+        color: #dc3545; /* Bootstrap rød farve til fejlmeddelelser */
     }
 </style>

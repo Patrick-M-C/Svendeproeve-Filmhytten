@@ -10,12 +10,19 @@
     <link href="app.css" rel="stylesheet" />
 </head>
 <body>
-    <app>Loading...</app>
-
-    <!-- Blazor WebAssembly loader -->
+    <div id="app">Loading...</div>
+    <Routes @rendermode=RenderMode.InteractiveServer />
     <script src="_framework/blazor.webassembly.js"></script>
-
-    <!-- Bootstrap 5.3.3 JS bundle (with Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Tilføj din brugerdefinerede JS funktion her -->
+    <script>
+        window.initializeAccordion = () => {
+            var accordionElements = document.querySelectorAll('.accordion');
+            accordionElements.forEach(el => {
+                new bootstrap.Collapse(el); // Initialiserer Accordion
+            });
+        };
+    </script>
 </body>
 </html>

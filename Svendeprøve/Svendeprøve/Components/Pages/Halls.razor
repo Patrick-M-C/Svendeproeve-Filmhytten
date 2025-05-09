@@ -1,6 +1,14 @@
 ﻿@page "/Hall"
 @using Svendeprøve.Components.Models
 @using Svendeprøve.Components.Services
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.JSInterop
+@rendermode InteractiveServer
 @inject HallService HallService
 @inject NavigationManager NavigationManager
 
@@ -59,7 +67,7 @@ else
 
     private void NavigateToSeats(int hallId)
     {
-        NavigationManager.NavigateTo($"/seats/{hallId}");
+        NavigationManager.NavigateTo($"/Seats");
     }
 
     private int GetColumns(List<Seat> seats)
