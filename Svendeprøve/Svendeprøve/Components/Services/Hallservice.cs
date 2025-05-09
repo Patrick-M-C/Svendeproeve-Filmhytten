@@ -36,13 +36,20 @@
             }
         }
 
+        //public async Task<Hall> GetHallByIdAsync(int id)
+        //{
+        //    var response = await _httpClient.GetAsync($"api/Hall/withseat/{id}");
+        //    response.EnsureSuccessStatusCode();
+        //    var json = await response.Content.ReadAsStringAsync();
+        //    Console.WriteLine($"Raw JSON for ID {id}: {json}");
+        //    return JsonSerializer.Deserialize<Hall>(json);
+        //}
         public async Task<Hall> GetHallByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"api/Hall/GetHallsWithSeats/{id}");
+            var response = await _httpClient.GetAsync($"api/Hall/withseat/{id}");
             response.EnsureSuccessStatusCode();
-            var json = await response.Content.ReadAsStringAsync();
-            Console.WriteLine($"Raw JSON for ID {id}: {json}");
-            return JsonSerializer.Deserialize<Hall>(json);
+
+            return await response.Content.ReadFromJsonAsync<Hall>();
         }
     }
 }
