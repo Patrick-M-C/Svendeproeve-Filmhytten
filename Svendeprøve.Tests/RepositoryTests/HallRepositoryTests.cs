@@ -239,16 +239,16 @@ namespace Svendeprøve.Tests.RepositoryTests
         {
             // Arrange
             await _context.Database.EnsureDeletedAsync();
-            var hall = new Hall { Name = "Same Name", SeatCount = 40 };
+            var hall = new Hall { Name = "SameName", SeatCount = 40 };
             _context.Hall.Add(hall);
             await _context.SaveChangesAsync();
 
             // Act
-            var updateOnlySeatCount = new Hall { Id = hall.Id, SeatCount = 100 };
+            var updateOnlySeatCount = new Hall { Id = hall.Id, Name = "SameName", SeatCount = 100 };
             var result = await _hallRepo.update(updateOnlySeatCount);
 
             // Assert
-            Assert.Equal("Same Name", result.Name); // Name should remain unchanged
+            Assert.Equal("SameName", result.Name);
             Assert.Equal(100, result.SeatCount);
         }
 

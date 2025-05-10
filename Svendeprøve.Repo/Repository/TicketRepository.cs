@@ -20,12 +20,18 @@ namespace Svendeprøve.Repo.Repository
 
         public async Task<List<Ticket>> getAll()
         {
-            return await context.Ticket.ToListAsync();
+            return await context.Ticket
+                .Include(t => t.User)
+                .Include(t => t.Seat)
+                .ToListAsync();
         }
 
         public async Task<Ticket> getById(int id)
         {
-            return await context.Ticket.FirstOrDefaultAsync(t => t.Id == id);
+            return await context.Ticket
+                .Include(t => t.User)
+                .Include(t => t.Seat)
+                .FirstOrDefaultAsync(t => t.Id == id);
         }
 
         public async Task<Ticket> create(Ticket ticket)

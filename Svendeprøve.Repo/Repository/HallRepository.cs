@@ -29,7 +29,12 @@ namespace Svendeprøve.Repo.Repository
 
         public async Task<Hall> getById(int id)
         {
-            return await context.Hall.Include(s => s.Seats).FirstOrDefaultAsync(h => h.Id == id);
+            return await context.Hall.FirstOrDefaultAsync(h => h.Id == id); 
+        }
+
+        public async Task<Hall> getByIdIncludeSeats(int id)
+        {
+            return await context.Hall.Include(h => h.Seats).FirstOrDefaultAsync(h => h.Id == id);
         }
 
         public async Task<Hall> create(Hall hall)
@@ -61,6 +66,7 @@ namespace Svendeprøve.Repo.Repository
 
             HallUpdate.Id = updateHall.Id;
             HallUpdate.SeatCount = updateHall.SeatCount;
+            HallUpdate.Name = updateHall.Name;
 
             await context.SaveChangesAsync();
             return HallUpdate;
