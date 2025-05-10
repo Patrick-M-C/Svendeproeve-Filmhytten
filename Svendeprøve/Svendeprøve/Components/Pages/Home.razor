@@ -1,10 +1,10 @@
 ﻿@page "/"
+@rendermode InteractiveServer
 
 @using Svendeprøve.Components.Models
 @using Svendeprøve.Components.Services
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
-@inject IJSRuntime JS
 
 <PageTitle>Home</PageTitle>
 
@@ -57,29 +57,4 @@ else
         var random = new Random();
         movies = allMovies.OrderBy(x => random.Next()).Take(5).ToList();
     }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            // Kald JavaScript-funktionen her
-            await JS.InvokeVoidAsync("initializeAccordion");
-        }
-    }
 }
-
-<style>
-    .navigation-buttons .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        margin: 0 10px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-    }
-
-        .navigation-buttons .btn:hover {
-            background-color: #0056b3;
-        }
-</style>
