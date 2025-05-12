@@ -15,36 +15,74 @@
 {
     <p class="text-center">Loading.....</p>
 }
+else if (movies.Count < 5)
+{
+    <p class="text-center text-danger">Ikke nok film tilgængelige. Kun @movies.Count film fundet.</p>
+}
 else
 {
-    <div id="movieAccordion" class="accordion mx-auto" style="max-width: 800px;">
-        @for (int i = 0; i < movies.Count; i++)
-        {
-            var movie = movies[i];
-            var collapseId = $"collapse{i}";
-            var headingId = $"heading{i}";
-            <div class="accordion-item">
-                <h2 class="accordion-header" id="@headingId">
-                    <button class="accordion-button @(i != 0 ? "collapsed" : "")"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#@collapseId"
-                            aria-expanded="@(i == 0 ? "true" : "false")"
-                            aria-controls="@collapseId">
-                        @movie.Title
-                    </button>
-                </h2>
-                <div id="@collapseId"
-                     class="accordion-collapse collapse @(i == 0 ? "show" : "")"
-                     aria-labelledby="@headingId"
-                     data-bs-parent="#movieAccordion">
-                    <div class="accordion-body">
-                        <img src="@movie.poster_path" class="d-block mx-auto img-fluid" alt="@movie.Title" style="max-height: 400px;" />
-                        <p>@movie.overview</p>
+    <div class="container">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            <!-- Film 1 -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@movies[0].poster_path" class="card-img-top" alt="@movies[0].Title" style="max-height: 400px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@movies[0].Title</h5>
+                        <p class="card-text">@movies[0].overview</p>
+                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[0].Id)">Bestil Billet</button>
                     </div>
                 </div>
             </div>
-        }
+
+            <!-- Film 2 -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@movies[1].poster_path" class="card-img-top" alt="@movies[1].Title" style="max-height: 400px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@movies[1].Title</h5>
+                        <p class="card-text">@movies[1].overview</p>
+                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[1].Id)">Bestil Billet</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Film 3 -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@movies[2].poster_path" class="card-img-top" alt="@movies[2].Title" style="max-height: 400px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@movies[2].Title</h5>
+                        <p class="card-text">@movies[2].overview</p>
+                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[2].Id)">Bestil Billet</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Film 4 -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@movies[3].poster_path" class="card-img-top" alt="@movies[3].Title" style="max-height: 400px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@movies[3].Title</h5>
+                        <p class="card-text">@movies[3].overview</p>
+                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[3].Id)">Bestil Billet</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Film 5 -->
+            <div class="col">
+                <div class="card h-100">
+                    <img src="@movies[4].poster_path" class="card-img-top" alt="@movies[4].Title" style="max-height: 400px; object-fit: cover;" />
+                    <div class="card-body">
+                        <h5 class="card-title">@movies[4].Title</h5>
+                        <p class="card-text">@movies[4].overview</p>
+                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[4].Id)">Bestil Billet</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 }
 
@@ -57,4 +95,62 @@ else
         var random = new Random();
         movies = allMovies.OrderBy(x => random.Next()).Take(5).ToList();
     }
+
+    private void NavigateToBooking(int movieId)
+    {
+        // Naviger til Seats med hallId=1
+        NavigationManager.NavigateTo("/Hall");
+    }
 }
+
+<style>
+    .container {
+        padding: 20px;
+    }
+
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        transition: box-shadow 0.2s ease;
+    }
+
+        .card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+    .card-img-top {
+        border-top-left-radius: 8px;
+        border-top-right-radius: 8px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 15px;
+    }
+
+    .btn-primary {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    .text-danger {
+        color: #dc3545; /* Bootstrap rød farve til fejl */
+    }
+</style>
