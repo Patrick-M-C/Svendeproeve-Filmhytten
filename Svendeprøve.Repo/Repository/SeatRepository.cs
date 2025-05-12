@@ -106,6 +106,8 @@ namespace Svendeprøve.Repo.Repository
             var SeatUpdate = await context.Seat.FirstOrDefaultAsync(s => s.Id == updateSeat.Id);
 
             SeatUpdate.Id = updateSeat.Id;
+            SeatUpdate.Row = updateSeat.Row;
+            SeatUpdate.IsReserved = updateSeat.IsReserved;
             SeatUpdate.SeatNumber = updateSeat.SeatNumber;
             SeatUpdate.HallId = updateSeat.HallId;
 
