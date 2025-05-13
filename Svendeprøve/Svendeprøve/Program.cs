@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Svendeprøve.Client.Pages;
 using Svendeprøve.Components;
 using Svendeprøve.Components.Account;
-using Svendeprøve.Components.Services;
 using Svendeprøve.Data;
 
 var builder = WebApplication.CreateBuilder(args);
