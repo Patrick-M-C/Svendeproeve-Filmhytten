@@ -24,6 +24,8 @@ builder.Services.AddScoped<SeatService>();
 builder.Services.AddScoped<HallService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7149") });
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options => { options.DetailedErrors = true; });
 
 builder.Services.AddAuthentication(options =>
 {
