@@ -1,11 +1,6 @@
 ﻿using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
 using Svendeprøve.Repo.DatabaseContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Svendeprøve.Repo.Repository

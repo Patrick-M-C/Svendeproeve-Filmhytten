@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Svendeprøve.Repo.DatabaseContext;
+﻿using Microsoft.AspNetCore.Mvc;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
 
@@ -10,16 +7,8 @@ namespace Svendeprøve.Api.Controllers
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : Controller
-    {
-        //private readonly Databasecontext _context;
-        //private readonly IPasswordHasher<User> _passwordHasher;
-        private readonly IUser _userRepo;
-
-        //public UserController(Databasecontext context /*, IPasswordHasher<User> passwordHasher*/)
-        //{
-        //    _context = context;
-        //    //_passwordHasher = passwordHasher;
-        //}
+    {        
+        private readonly IUser _userRepo;     
 
         public UserController(IUser userRepo)
         {
@@ -30,16 +19,14 @@ namespace Svendeprøve.Api.Controllers
         public async Task<ActionResult<IEnumerable<User>>> GetUsers()
         {
             var users = await _userRepo.GetAllAsync();
-            return Ok(users);
-            //return await _context.User.ToListAsync();
+            return Ok(users);            
         }
 
         [HttpGet("withTickets")]
         public async Task<ActionResult<IEnumerable<User>>> GetUsersIncludeTickets()
         {
             var users = await _userRepo.GetAllIncludeUserTicketAsync();
-            return Ok(users);
-            //return await _context.User.Include(u => u.Tickets).ToListAsync();
+            return Ok(users);            
         }
 
         [HttpGet("{id}")]
@@ -48,14 +35,7 @@ namespace Svendeprøve.Api.Controllers
             var user = await _userRepo.GetByIdAsync(id);
             if (user == null) return NotFound();
 
-            return Ok(user);
-            //var user = await _context.User.FindAsync(id);
-
-            //if (user == null)
-            //{
-            //    return NotFound();
-            //}
-            //return user;
+            return Ok(user);            
         }
 
         [HttpGet("byName/{name}")]
@@ -85,16 +65,7 @@ namespace Svendeprøve.Api.Controllers
             user.Tickets = null;
 
             var created = await _userRepo.CreateAsync(user);
-            return CreatedAtAction(nameof(GetUser), new { id = created.Id }, created);
-            //if (user == null) return BadRequest("User cannot be null.");
-
-            //user.Tickets = null;
-            ////user.Password = _passwordHasher.HashPassword(user, user.Password);
-
-            //_context.User.Add(user);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(GetUser), new { id = created.Id }, created);            
         }
 
         [HttpPut("{id}")]
@@ -113,41 +84,7 @@ namespace Svendeprøve.Api.Controllers
                 return NotFound();
             }
 
-            return NoContent();
-            //if (id != user.Id)
-            //{
-            //    return BadRequest("User ID mismatch.");
-            //}
-
-            //var existingUser = await _context.User.FindAsync(id);
-            //if (existingUser == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //existingUser.Name = user.Name;
-            //existingUser.Email = user.Email;
-            //existingUser.PhoneNumber = user.PhoneNumber;
-
-            //existingUser.Password = user.Password;
-            ////existingUser.Password = _passwordHasher.HashPassword(user, user.Password);
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!UserExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-            //return NoContent();
+            return NoContent();            
         }
 
         [HttpDelete("{id}")]
@@ -156,21 +93,7 @@ namespace Svendeprøve.Api.Controllers
             var deleted = await _userRepo.DeleteAsync(id);
             if (deleted == null) return NotFound();
 
-            return NoContent();
-            //var user = await _context.User.FindAsync(id);
-            //if (user == null)
-            //{
-            //    return NotFound();
-            //}
-            //_context.User.Remove(user);
-            //await _context.SaveChangesAsync();
-
-            //return NoContent();
-        }
-
-        //private bool UserExists(int id)
-        //{
-        //    return _context.User.Any(e => e.Id == id);
-        //}
+            return NoContent();            
+        }        
     }
 }

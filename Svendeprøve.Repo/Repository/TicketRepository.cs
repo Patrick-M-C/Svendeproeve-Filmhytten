@@ -2,11 +2,6 @@
 using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Svendeprøve.Repo.Repository
 {
@@ -57,8 +52,7 @@ namespace Svendeprøve.Repo.Repository
             TicketUpdate.Id = updateTicket.Id;
             TicketUpdate.Price = updateTicket.Price;
             TicketUpdate.UserId = updateTicket.UserId;
-            TicketUpdate.SeatId = updateTicket.SeatId;
-            //TicketUpdate.ScreeningId = updateTicket.ScreeningId;
+            TicketUpdate.SeatId = updateTicket.SeatId;            
             TicketUpdate.IsCanceled = updateTicket.IsCanceled;
 
             await context.SaveChangesAsync();

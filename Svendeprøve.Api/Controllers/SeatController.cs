@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
 
@@ -10,12 +8,10 @@ namespace Svendeprøve.Api.Controllers
     [Route("api/[controller]")]
     public class SeatController : ControllerBase
     {
-        //private readonly Databasecontext _context;
         private readonly ISeat _seatRepo;
 
-        public SeatController(/*Databasecontext context,*/ ISeat seatRepo)
-        {
-            //_context = context;
+        public SeatController(ISeat seatRepo)
+        {            
             _seatRepo = seatRepo;
         }
 
@@ -23,8 +19,7 @@ namespace Svendeprøve.Api.Controllers
         public async Task<ActionResult<IEnumerable<Seat>>> GetSeats()
         {
             var seats = await _seatRepo.getAll();
-            return Ok(seats);
-            //return await _context.Seat.ToListAsync();
+            return Ok(seats);            
         }
 
         [HttpGet("{id}")]
@@ -34,34 +29,21 @@ namespace Svendeprøve.Api.Controllers
             if (seat == null)
                 return NotFound();
 
-            return Ok(seat);
-            //var seat = await _context.Seat.FindAsync(id);
-
-            //if (seat == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //return seat;
+            return Ok(seat);            
         }
 
         [HttpGet("ByHall/{hallId}")]
         public async Task<ActionResult<IEnumerable<Seat>>> GetSeatsByHall(int hallId)
         {
             var seats = await _seatRepo.getByHallId(hallId);
-            return Ok(seats);
-            //return await _context.Seat.Where(s => s.HallId == hallId).ToListAsync();
+            return Ok(seats);            
         }
 
         [HttpPost]
         public async Task<ActionResult<Seat>> CreateSeat(Seat seat)
         {
             var created = await _seatRepo.create(seat.Row, seat.SeatNumber, seat.HallId);
-            return CreatedAtAction(nameof(GetSeat), new { id = created.Id }, created);
-            //_context.Seat.Add(seat);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction(nameof(GetSeat), new { id = seat.Id }, seat);
+            return CreatedAtAction(nameof(GetSeat), new { id = created.Id }, created);            
         }
 
         [HttpPost("multiple")]
@@ -90,12 +72,7 @@ namespace Svendeprøve.Api.Controllers
             var allSeats = await _seatRepo.getAll();
             var reservedSeats = allSeats.Where(s => s.IsReserved).ToList();
 
-            return Ok(reservedSeats);
-            //var reservedSeats = await _context.Seat
-            //    .Where(s => s.IsReserved == true)
-            //    .ToListAsync();
-
-            //return Ok(reservedSeats);
+            return Ok(reservedSeats);            
         }
 
         [HttpPut("{id}")]
@@ -108,31 +85,7 @@ namespace Svendeprøve.Api.Controllers
             if (updated == null)
                 return NotFound();
 
-            return NoContent();
-            //if (id != seat.Id)
-            //{
-            //    return BadRequest();
-            //}
-
-            //_context.Entry(seat).State = EntityState.Modified;
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!SeatExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-
-            //return NoContent();
+            return NoContent();            
         }
 
         [HttpDelete("{id}")]
@@ -142,22 +95,7 @@ namespace Svendeprøve.Api.Controllers
             if (deleted == null)
                 return NotFound();
 
-            return NoContent();
-            //var seat = await _context.Seat.FindAsync(id);
-            //if (seat == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //_context.Seat.Remove(seat);
-            //await _context.SaveChangesAsync();
-
-            //return NoContent();
-        }
-
-        //private bool SeatExists(int id)
-        //{
-        //    return _context.Seat.Any(e => e.Id == id);
-        //}
+            return NoContent();            
+        }       
     }
 }

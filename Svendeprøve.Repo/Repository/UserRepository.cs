@@ -12,13 +12,11 @@ namespace Svendeprøve.Repo.Repository
 {
     public class UserRepository : IUser
     {
-        private readonly Databasecontext _context;
-        //private readonly PasswordHasher<User> _passwordHasher;
+        private readonly Databasecontext _context;        
 
         public UserRepository(Databasecontext context)
         {
-            _context = context;
-            //_passwordHasher = new PasswordHasher<User>();
+            _context = context;           
         }
 
         public async Task<List<User>> GetAllAsync()
@@ -48,9 +46,7 @@ namespace Svendeprøve.Repo.Repository
 
         public async Task<User> CreateAsync(User user)
         {
-            if (user == null) throw new ArgumentNullException(nameof(user));
-
-            //user.Password = _passwordHasher.HashPassword(user, user.Password);
+            if (user == null) throw new ArgumentNullException(nameof(user));            
 
             _context.User.Add(user);
             await _context.SaveChangesAsync();
@@ -68,9 +64,7 @@ namespace Svendeprøve.Repo.Repository
             existingUser.Email = user.Email;
             existingUser.PhoneNumber = user.PhoneNumber;
             existingUser.Password = user.Password;
-            existingUser.IsAdmin = user.IsAdmin;
-
-            //existingUser.Password = _passwordHasher.HashPassword(existingUser, user.Password);
+            existingUser.IsAdmin = user.IsAdmin;            
 
             await _context.SaveChangesAsync();
             return existingUser;

@@ -14,11 +14,7 @@ namespace Svendeprøve.Repo.DTO
 
         public int SeatId { get; set; }
 
-        //[JsonIgnore]
         public Seat? Seat { get; set; }
-
-        //public int ScreeningId { get; set; }
-        //public Screening Screening { get; set; }
 
         public bool IsCanceled { get; set; }
     }

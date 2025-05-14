@@ -3,11 +3,6 @@ using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net.Http.Json;
 
 namespace Svendeprøve.Repo.Repository
@@ -24,8 +19,7 @@ namespace Svendeprøve.Repo.Repository
         public MovieRepository(HttpClient httpClient, Databasecontext dbcontext,IConfiguration configuration)
         {
             this.configuration = configuration;
-            _httpClient = httpClient;
-            //_apiKey = Key.APIKey;
+            _httpClient = httpClient;            
             _apiKey = this.configuration.GetSection("TMDB:ApiKey").Value;
             _dbContext = dbcontext;
         }
@@ -92,12 +86,6 @@ namespace Svendeprøve.Repo.Repository
             return movies;
         }
 
-
-        public Task<IEnumerable<Movie>> GetAllMoviesratelimitAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<Movie> GetMovieByIdAsync(int id)
         {
             var response = await _httpClient.GetAsync($"{_baseUrl}/movie/{id}?api_key={_apiKey}");
@@ -124,12 +112,6 @@ namespace Svendeprøve.Repo.Repository
                 };
             }
             return null;
-        }
-        
-
-        public Task<List<Movie>> GetMoviesAsync(int page, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
+        }        
     }
 }

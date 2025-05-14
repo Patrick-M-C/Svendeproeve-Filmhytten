@@ -2,11 +2,6 @@
 using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Svendeprøve.Repo.Repository
 {
@@ -35,14 +30,13 @@ namespace Svendeprøve.Repo.Repository
 
         public async Task<bool> IsSeatReservedAsync(int seatId)
         {
-            var seat = await context.Seat.FindAsync(seatId); // Assumes `_context` is your DbContext
+            var seat = await context.Seat.FindAsync(seatId);
             if (seat == null)
             {
                 throw new KeyNotFoundException($"Seat with ID {seatId} not found.");
             }
             return seat.IsReserved;
         }
-
 
         public async Task<Seat> create(int row, int seatnumber, int hallId)
         {
@@ -82,10 +76,10 @@ namespace Svendeprøve.Repo.Repository
                 }
             }
 
-            context.Seat.AddRange(seats); // Add all seats to the database context
-            await context.SaveChangesAsync(); // Save changes to persist them in the database
+            context.Seat.AddRange(seats); 
+            await context.SaveChangesAsync(); 
 
-            return seats; // Return the list of created seats
+            return seats;
         }
 
 

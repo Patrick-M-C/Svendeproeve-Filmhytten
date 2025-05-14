@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Svendeprøve.Repo.DTO
+﻿namespace Svendeprøve.Repo.DTO
 {
     public class User
     {
