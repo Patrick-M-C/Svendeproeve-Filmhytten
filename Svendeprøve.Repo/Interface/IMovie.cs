@@ -9,9 +9,9 @@ namespace Svendeprøve.Repo.Interface
 {
     public interface IMovie
     {
-        Task<IEnumerable<Movie>> GetAllMoviesratelimitAsync();
         Task<IEnumerable<Movie>> GetAllMoviesAsync();
+        //Task<IEnumerable<Movie>> GetAllMoviesratelimitAsync();
         Task<Movie> GetMovieByIdAsync(int id);
-        Task<List<Movie>> GetMoviesAsync(int page, int pageSize);
+        //Task<List<Movie>> GetMoviesAsync(int page, int pageSize);
     }
 }

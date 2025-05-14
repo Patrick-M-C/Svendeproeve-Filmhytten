@@ -98,10 +98,34 @@ namespace Svendeprøve.Repo.Repository
             throw new NotImplementedException();
         }
 
-        public Task<Movie> GetMovieByIdAsync(int id)
+        public async Task<Movie> GetMovieByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var response = await _httpClient.GetAsync($"{_baseUrl}/movie/{id}?api_key={_apiKey}");
+            if (response.IsSuccessStatusCode)
+            {
+                var movie = await response.Content.ReadFromJsonAsync<Movie>();
+                //var genres = await GetGenreMappingsAsync(); // Fetch genre mappings
+
+                var genreNames = movie.Genres != null && movie.Genres.Any()
+                    ? string.Join(", ", movie.Genres.Select(g => g.name))
+                    : "Unknown";
+
+                return new Movie
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    Genre = genreNames, // Mapped genre names
+                    Genres = movie.Genres, // Original genre objects
+                    overview = movie.overview,
+                    Runtime = movie.Runtime,
+                    vote_average = movie.vote_average,
+                    release_date = movie.release_date,
+                    poster_path = $"{_posterBaseUrl}{movie.poster_path}"
+                };
+            }
+            return null;
         }
+        
 
         public Task<List<Movie>> GetMoviesAsync(int page, int pageSize)
         {
