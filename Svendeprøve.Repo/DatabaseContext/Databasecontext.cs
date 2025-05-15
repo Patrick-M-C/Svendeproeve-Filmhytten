@@ -8,6 +8,20 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Repo.DatabaseContext
 {
+    /*
+     * DatabaseContext
+     * 
+     * Denne klasse repræsenterer systemets databasekonfiguration og styrer forbindelsen mellem applikationen og databasen via Entity Framework Core.
+     * Den definerer DbSet for de centrale entiteter i systemet, såsom Hall, Seat, User, Ticket og Genre.
+     * 
+     * I metoden OnModelCreating seed'es initiale data til databasen, hvilket muliggør test og demonstration uden manuel dataindsætning.
+     * Dette inkluderer:
+     * - Genrer til film.
+     * - Brugere med forskellige roller.
+     * - Billetter med relation til brugere og sæder.
+     * - Haller og deres tilhørende sæder.
+     * 
+     */
     public class Databasecontext : DbContext
     {
         public Databasecontext(DbContextOptions<Databasecontext> options) : base(options) { }
@@ -42,8 +56,8 @@ namespace Svendeprøve.Repo.DatabaseContext
             );
 
             modelBuilder.Entity<User>().HasData(
-               new User { Id = 1, Name = "Kasper", Email = "kasper@mail.com", PhoneNumber = "123456789", Password = "placeholder1" },
-               new User { Id = 2, Name = "Sofia", Email = "sofia@mail.com", PhoneNumber = "987654321", Password = "placeholder2" }
+               new User { Id = 1, Name = "Kasper", Email = "kasper@mail.com", PhoneNumber = "123456789", Password = "placeholder1", IsAdmin = false },
+               new User { Id = 2, Name = "Sofia", Email = "sofia@mail.com", PhoneNumber = "987654321", Password = "placeholder2", IsAdmin = true }
             );
 
             modelBuilder.Entity<Ticket>().HasData(
