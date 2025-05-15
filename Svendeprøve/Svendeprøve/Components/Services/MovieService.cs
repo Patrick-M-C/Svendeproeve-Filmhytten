@@ -7,6 +7,17 @@
 
     // Serviceklasse til håndtering af API-kald relateret til vores film.
     // Udfører HTTP-anmodninger for at hente film fra vores API via det HTTP Call.
+
+    //Funktioner: 
+    // MovieService -> Initialiserer HttpClient med en baseadresse via dependency injection.
+    // GetMoviesAsync -> Henter en liste af alle film fra API'et.3
+    // Returnerer tom liste, hvis ingen data modtages.
+    // Returnerer listen af film.
+    // Logger fejl ved API-kald.
+    // og Returnerer tom liste ved fejl.
+
+    // GetMovieByIdAsync -> Henter en specifik film baseret på dens ID.
+    // Udfører GET-anmodning for en enkelt film.
     public class MovieService
     {
         private readonly HttpClient _httpClient;

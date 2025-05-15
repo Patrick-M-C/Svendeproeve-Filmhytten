@@ -78,8 +78,8 @@ else
     {
         try
         {
-            selectedMovieId = movieId; // Sæt den valgte film
-            errorMessage = null; // Ryd eventuelle fejlmeddelelser
+            selectedMovieId = movieId;
+            errorMessage = null;
             Console.WriteLine($"Selected movie ID: {movieId}");
             StateHasChanged();
         }
@@ -106,8 +106,8 @@ else
 
             Console.WriteLine($"Navigating to /Hall with movie ID: {selectedMovieId}");
             NavigationManager.NavigateTo("/Hall");
-            selectedMovieId = null; // Nulstil highlight efter navigation
-            errorMessage = null; // Ryd eventuelle fejlmeddelelser
+            selectedMovieId = null;
+            errorMessage = null;
             StateHasChanged();
         }
         catch (Exception ex)

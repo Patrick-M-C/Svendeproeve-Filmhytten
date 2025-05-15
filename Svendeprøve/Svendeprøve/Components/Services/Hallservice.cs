@@ -6,6 +6,11 @@
 
     // Serviceklasse til håndtering af API-kald relateret til biografsalen.
     // Udfører HTTP-anmodninger for at hente sale og deres sædeoplysninger fra en backend.
+
+    // Funktioner: (i rækkefølge)
+    // HTTPClient -> Initialiserer HttpClient via dependency injection.
+    // JsonSerializer -> Ignorerer store/små bogstaver i JSON og Tillader ekstra kommaer i JSON
+    // GetHallByIdAsync -> Henter en specifik sal inklusive dens sæder baseret på salens ID
     public class HallService
     {
         private readonly HttpClient _httpClient;
