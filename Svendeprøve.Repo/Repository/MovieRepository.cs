@@ -3,15 +3,25 @@ using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net.Http.Json;
 
 namespace Svendeprøve.Repo.Repository
 {
+    /*
+     * MovieRepository
+     * 
+     * Repository-klassen står for kommunikation med The Movie Database (TMDB) API og håndtering af filmdata.
+     * Den implementerer IMovie-interfacet og bruger en HttpClient til at hente og formatere filmoplysninger.
+     * 
+     * Funktionalitet:
+     * - Henter op til 100 film fra TMDB API via paginerede kald.
+     * - Mapper genre-ID'er til genrenavne ud fra en lokal database for at sikre konsistens.
+     * - Returnerer detaljer om enkeltfilm inkl. titel, genre(r), beskrivelse, udgivelsesdato og billede.
+     * 
+     * Repositoryet anvender konfigureret API-nøgle og understøtter caching af genredata for bedre performance.
+     * Det sikrer en klar adskillelse mellem dataadgang og forretningslogik, hvilket gør systemet mere testbart og vedligeholdelsesvenligt.
+     */
+
     public class MovieRepository : IMovie
     {
         private readonly HttpClient _httpClient;
@@ -24,8 +34,7 @@ namespace Svendeprøve.Repo.Repository
         public MovieRepository(HttpClient httpClient, Databasecontext dbcontext,IConfiguration configuration)
         {
             this.configuration = configuration;
-            _httpClient = httpClient;
-            //_apiKey = Key.APIKey;
+            _httpClient = httpClient;            
             _apiKey = this.configuration.GetSection("TMDB:ApiKey").Value;
             _dbContext = dbcontext;
         }
@@ -92,20 +101,32 @@ namespace Svendeprøve.Repo.Repository
             return movies;
         }
 
-
-        public Task<IEnumerable<Movie>> GetAllMoviesratelimitAsync()
+        public async Task<Movie> GetMovieByIdAsync(int id)
         {
-            throw new NotImplementedException();
-        }
+            var response = await _httpClient.GetAsync($"{_baseUrl}/movie/{id}?api_key={_apiKey}");
+            if (response.IsSuccessStatusCode)
+            {
+                var movie = await response.Content.ReadFromJsonAsync<Movie>();
+                //var genres = await GetGenreMappingsAsync(); // Fetch genre mappings
 
-        public Task<Movie> GetMovieByIdAsync(int id)
-        {
-            throw new NotImplementedException();
-        }
+                var genreNames = movie.Genres != null && movie.Genres.Any()
+                    ? string.Join(", ", movie.Genres.Select(g => g.name))
+                    : "Unknown";
 
-        public Task<List<Movie>> GetMoviesAsync(int page, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
+                return new Movie
+                {
+                    Id = movie.Id,
+                    Title = movie.Title,
+                    Genre = genreNames, // Mapped genre names
+                    Genres = movie.Genres, // Original genre objects
+                    overview = movie.overview,
+                    Runtime = movie.Runtime,
+                    vote_average = movie.vote_average,
+                    release_date = movie.release_date,
+                    poster_path = $"{_posterBaseUrl}{movie.poster_path}"
+                };
+            }
+            return null;
+        }        
     }
 }

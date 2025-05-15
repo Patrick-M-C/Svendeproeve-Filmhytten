@@ -1,9 +1,9 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Svendeprøve.Repo.DTO
+﻿namespace Svendeprøve.Repo.DTO
 {
     public class User
     {
+        // Bruger profil med kontaktoplysninger, adgangskode og administratorstatus.
+        // Indeholder en liste af billetter (Tickets), som brugeren har købt eller reserveret.
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }

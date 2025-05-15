@@ -11,6 +11,19 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Tests.ControllerTests
 {
+    /*
+     * SeatControllerTests
+     * 
+     * Indeholder enhedstests for SeatController. Testene anvender en mock af ISeat-repositoryet
+     * for at isolere controllerens adfærd og sikre, at logikken fungerer korrekt uafhængigt af databasen.
+     * 
+     * Funktionalitet der testes:
+     * - Hentning af alle sæder og filtrering af reserverede sæder.
+     * - Hentning af enkelte sæder samt sæder tilhørende en bestemt sal.
+     * - Oprettelse af enkelt- og flersæder.
+     * - Opdatering af sæder (success, ID mismatch, og ikke fundet).
+     * - Sletning af sæder og håndtering af ikke-eksisterende ID’er.
+     */
     public class SeatControllerTests
     {
         private readonly Mock<ISeat> _mockRepo;

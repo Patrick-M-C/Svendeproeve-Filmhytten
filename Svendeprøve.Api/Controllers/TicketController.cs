@@ -1,21 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Api.Controllers
 {
+    /*
+ * TicketController
+ * 
+ * Behandler operationer omkring billetter. Implementerer ITicket for at holde controlleren enkel og uafhængig af datalagringsdetaljer.
+ * 
+ * Funktionalitet:
+ * - Hent alle billetter, både med og uden relaterede bruger- og sædeoplysninger.
+ * - Hent specifik billet baseret på ID.
+ * - Opret nye billetter.
+ * - Opdater eksisterende billetter.
+ * - Slet billetter.
+ */
     [ApiController]
     [Route("api/[controller]")]
     public class TicketController : Controller
-    {
-        //private readonly Databasecontext _context;
+    {        
         private readonly ITicket _ticketRepo;
 
-        public TicketController(/*Databasecontext context,*/ ITicket ticketRepo)
+        public TicketController(ITicket ticketRepo)
         {
-            //_context = context;
+            
             _ticketRepo = ticketRepo;
         }
 
@@ -23,24 +32,14 @@ namespace Svendeprøve.Api.Controllers
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTickets()
         {
             var tickets = await _ticketRepo.getAll();
-            return Ok(tickets);
-            //return await _context.Ticket
-            //    .Include(t => t.User)
-            //    .Include(t => t.Seat)
-            //    //.Include(t => t.Screening)
-            //    .ToListAsync();
+            return Ok(tickets);           
         }
 
         [HttpGet("IncludeUserAndSeat")]
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTicketsIncludeUserAndSeat()
         {
-            var tickets = await _ticketRepo.getAll();
-            return Ok(tickets);
-            //return await _context.Ticket
-            //    .Include(t => t.User)
-            //    .Include(t => t.Seat)
-            //    //.Include(t => t.Screening)
-            //    .ToListAsync();
+            var tickets = await _ticketRepo.getAllIncludeUserAndSeat();
+            return Ok(tickets);            
         }
 
         [HttpGet("{id}")]
@@ -50,17 +49,7 @@ namespace Svendeprøve.Api.Controllers
             if (ticket == null)
                 return NotFound();
 
-            return Ok(ticket);
-            //var ticket = await _context.Ticket
-            //    .Include(t => t.User)
-            //    .Include(t => t.Seat)
-            //    //.Include(t => t.Screening)
-            //    .FirstOrDefaultAsync(t => t.Id == id);
-
-            //if (ticket == null)
-            //    return NotFound();
-
-            //return Ok(ticket);
+            return Ok(ticket);            
         }
 
         [HttpGet("IncludeUserAndSeat/{id}")]
@@ -70,17 +59,7 @@ namespace Svendeprøve.Api.Controllers
             if (ticket == null)
                 return NotFound();
 
-            return Ok(ticket);
-            //var ticket = await _context.Ticket
-            //    .Include(t => t.User)
-            //    .Include(t => t.Seat)
-            //    //.Include(t => t.Screening)
-            //    .FirstOrDefaultAsync(t => t.Id == id);
-
-            //if (ticket == null)
-            //    return NotFound();
-
-            //return Ok(ticket);
+            return Ok(ticket);      
         }
 
         [HttpPost]
@@ -90,11 +69,7 @@ namespace Svendeprøve.Api.Controllers
                 return BadRequest("Ticket cannot be null.");
 
             var created = await _ticketRepo.create(ticket);
-            return CreatedAtAction(nameof(GetTicketById), new { id = created.Id }, created);
-            //_context.Ticket.Add(ticket);
-            //await _context.SaveChangesAsync();
-
-            //return CreatedAtAction(nameof(GetTicket), new { id = ticket.Id }, ticket);
+            return CreatedAtAction(nameof(GetTicketById), new { id = created.Id }, created);            
         }
 
         [HttpPut("{id}")]
@@ -113,38 +88,7 @@ namespace Svendeprøve.Api.Controllers
                 return NotFound();
             }
 
-            return NoContent();
-            //if (id != ticket.Id)
-            //{
-            //    return BadRequest("Ticket id not found.");
-            //}
-
-            //var existingTicket = await _context.Ticket.FindAsync(id);
-            //if (existingTicket == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //existingTicket.Price = ticket.Price;
-            //existingTicket.SeatId = ticket.SeatId;
-            //existingTicket.IsCanceled = false;
-
-            //try
-            //{
-            //    await _context.SaveChangesAsync();
-            //}
-            //catch (DbUpdateConcurrencyException)
-            //{
-            //    if (!TicketExists(id))
-            //    {
-            //        return NotFound();
-            //    }
-            //    else
-            //    {
-            //        throw;
-            //    }
-            //}
-            //return NoContent();
+            return NoContent();            
         }
 
         [HttpDelete("{id}")]
@@ -154,22 +98,9 @@ namespace Svendeprøve.Api.Controllers
             if (deleted == null)
                 return NotFound();
 
-            return NoContent();
-            //var ticket = await _context.Ticket.FindAsync(id);
-            //if (ticket == null)
-            //{
-            //    return NotFound();
-            //}
-
-            //_context.Ticket.Remove(ticket);
-            //await _context.SaveChangesAsync();
-
-            //return NoContent();
+            return NoContent();            
         }
 
-        //private bool TicketExists(int id)
-        //{
-        //    return _context.Ticket.Any(e => e.Id == id);
-        //}
+        
     }
 }

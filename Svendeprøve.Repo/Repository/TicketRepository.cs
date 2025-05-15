@@ -2,14 +2,23 @@
 using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Svendeprøve.Repo.Repository
 {
+    /*
+     * TicketRepository
+     * 
+     * Ansvarlig for al datatilgang relateret til billetter (Ticket). 
+     * Implementerer ITicket-interfacet og anvender Entity Framework til at håndtere CRUD-operationer mod databasen.
+     * 
+     * Funktionalitet:
+     * - Hent alle billetter eller en specifik billet baseret på ID.
+     * - Inkluderer relaterede data som tilknyttet bruger og sæde, når det ønskes.
+     * - Opretter, opdaterer og sletter billetter i databasen.
+     * 
+     * Ved at adskille dataadgangslogik fra controllerlaget, sikres en mere testbar og vedligeholdelsesvenlig arkitektur.
+     */
+
     public class TicketRepository : ITicket
     {
         Databasecontext context;
@@ -57,8 +66,7 @@ namespace Svendeprøve.Repo.Repository
             TicketUpdate.Id = updateTicket.Id;
             TicketUpdate.Price = updateTicket.Price;
             TicketUpdate.UserId = updateTicket.UserId;
-            TicketUpdate.SeatId = updateTicket.SeatId;
-            //TicketUpdate.ScreeningId = updateTicket.ScreeningId;
+            TicketUpdate.SeatId = updateTicket.SeatId;            
             TicketUpdate.IsCanceled = updateTicket.IsCanceled;
 
             await context.SaveChangesAsync();

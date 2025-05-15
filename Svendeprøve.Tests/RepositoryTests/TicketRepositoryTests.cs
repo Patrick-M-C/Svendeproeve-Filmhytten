@@ -10,6 +10,19 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Tests.RepositoryTests
 {
+    /*
+     * TicketRepositoryTests
+     * 
+     * Enhedstest for TicketRepository, som bruger en in-memory database til at efterligne reel databasetilstand. 
+     * Disse tests sikrer, at logikken bag billetadministration fungerer korrekt.
+     * 
+     * Dækker:
+     * - Hentning af billetter med og uden tilknyttede User og Seat entiteter.
+     * - CRUD-operationer: oprettelse, læsning, opdatering og sletning.
+     * - Verificering af inkluderet navigationsejendomme (f.eks. Include(t => t.User)).
+     * - Edge cases som f.eks. forespørgsler på ikke-eksisterende ID’er.
+     * 
+     */
     public class TicketRepositoryTests
     {
         private readonly DbContextOptions<Databasecontext> _options;

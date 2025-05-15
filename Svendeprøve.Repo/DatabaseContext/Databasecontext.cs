@@ -96,7 +96,6 @@ namespace Svendeprøve.Repo.DatabaseContext
                     new Seat { Id = 16, Row = 2, SeatNumber = 3, IsReserved = false, HallId = 3 },
                     new Seat { Id = 17, Row = 2, SeatNumber = 4, IsReserved = false, HallId = 3 }
                 );
-
         }
 
     }

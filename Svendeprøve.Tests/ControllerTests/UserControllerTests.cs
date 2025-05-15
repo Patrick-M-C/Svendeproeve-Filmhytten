@@ -11,6 +11,19 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Tests.ControllerTests
 {
+    /*
+     * UserControllerTests
+     * 
+     * Testklasse for UserController, IUser bruger mock for at isolere testene fra datalaget.
+     * Testene sikrer at controlleren reagerer korrekt i forskellige scenarier for CRUD-operationer.
+     * 
+     * Testdækning inkluderer:
+     * - Hentning af brugere og brugere med billetter.
+     * - Hentning baseret på ID, navn og email.
+     * - Oprettelse af bruger, inkl. håndtering af null-værdier.
+     * - Opdatering af bruger, inkl. validering og fejl ved manglende data.
+     * - Sletning af bruger og håndtering af ikke-eksisterende brugere.
+     */
     public class UserControllerTests
     {
         private readonly Mock<IUser> _mockRepo;

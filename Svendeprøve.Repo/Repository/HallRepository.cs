@@ -1,15 +1,24 @@
 ﻿using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
 using Svendeprøve.Repo.DatabaseContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace Svendeprøve.Repo.Repository
 {
+    /*
+     * HallRepository
+     * 
+     * Repository-klassen håndterer datatilgang og CRUD-operationer for Hall-entiteten.
+     * Den implementerer IHall-interfacet og giver en struktureret tilgang til at interagere med databasen gennem Entity Framework Core.
+     * 
+     * Funktionalitet:
+     * - Hent alle sale, med eller uden tilknyttede sæder.
+     * - Hent en enkelt sal baseret på ID, med mulighed for at inkludere sæder.
+     * - Opret en ny sal i databasen.
+     * - Opdater eksisterende sal baseret på ID.
+     * - Slet en sal.
+     * 
+     */
     public class HallRepository : IHall
     {
         Databasecontext context;

@@ -2,14 +2,24 @@
 using Svendeprøve.Repo.DatabaseContext;
 using Svendeprøve.Repo.DTO;
 using Svendeprøve.Repo.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Svendeprøve.Repo.Repository
 {
+    /*
+     * SeatRepository
+     * 
+     * Denne repository-klasse håndterer al datatilgang relateret til sæder (Seat).
+     * Den implementerer ISeat-interfacet og benytter Entity Framework til at foretage databaseoperationer.
+     * 
+     * Funktionalitet:
+     * - Henter alle sæder eller specifikke sæder baseret på ID eller HallId.
+     * - Opretter et enkelt sæde eller flere sæder samtidig (fx ved oprettelse af en hel sal).
+     * - Opdaterer eksisterende sædeinformationer.
+     * - Sletter sæder fra databasen.
+     * - Validerer om et sæde er reserveret via `IsSeatReservedAsync`. 
+     *
+     */
+
     public class SeatRepository : ISeat
     {
         Databasecontext context;
@@ -35,14 +45,13 @@ namespace Svendeprøve.Repo.Repository
 
         public async Task<bool> IsSeatReservedAsync(int seatId)
         {
-            var seat = await context.Seat.FindAsync(seatId); // Assumes `_context` is your DbContext
+            var seat = await context.Seat.FindAsync(seatId);
             if (seat == null)
             {
                 throw new KeyNotFoundException($"Seat with ID {seatId} not found.");
             }
             return seat.IsReserved;
         }
-
 
         public async Task<Seat> create(int row, int seatnumber, int hallId)
         {
@@ -82,10 +91,10 @@ namespace Svendeprøve.Repo.Repository
                 }
             }
 
-            context.Seat.AddRange(seats); // Add all seats to the database context
-            await context.SaveChangesAsync(); // Save changes to persist them in the database
+            context.Seat.AddRange(seats); 
+            await context.SaveChangesAsync(); 
 
-            return seats; // Return the list of created seats
+            return seats;
         }
 
 

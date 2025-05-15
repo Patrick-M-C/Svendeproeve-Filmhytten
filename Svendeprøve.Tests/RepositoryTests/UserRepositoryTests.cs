@@ -10,6 +10,20 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Tests.RepositoryTests
 {
+    /*
+     * UserRepositoryTests
+     * 
+     * Indeholder enhedstests for UserRepository ved hjælp af en in-memory database for at sikre,
+     * at CRUD-operationer og forretningslogik for brugerhåndtering fungerer korrekt og isoleret fra resten af systemet.
+     * 
+     * Dækker følgende scenarier:
+     * - Hentning af brugere med og uden tilknyttede billetter.
+     * - Søgning efter bruger baseret på ID, navn og e-mail.
+     * - Oprettelse og opdatering af brugere, inkl. håndtering af ugyldige input.
+     * - Sletning af brugere og håndtering af ikke-eksisterende ID’er.
+     * 
+     */
+
     public class UserRepositoryTests
     {
         private readonly DbContextOptions<Databasecontext> _options;

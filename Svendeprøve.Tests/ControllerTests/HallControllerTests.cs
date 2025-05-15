@@ -13,6 +13,20 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Tests.ControllerTests
 {
+    /*
+     * HallControllerTests
+     * 
+     * Indeholder enhedstests for HallController, hvor controllerens logik testes isoleret
+     * ved hjælp af en mocket IHall repository. Ved at simulere repository’et sikres det,
+     * at testene kun fokuserer på controllerens adfærd uden afhængighed af database.
+     * 
+     * Funktionalitet der testes:
+     * - Hentning af alle haller, både med og uden tilknyttede sæder.
+     * - Hentning af enkelte haller med og uden sæder, baseret på ID.
+     * - Oprettelse af en ny hal og bekræftelse af resultatet.
+     * - Opdatering af eksisterende haller med korrekt og forkert ID.
+     * - Sletning af haller og håndtering af ikke-eksisterende ID’er.
+     */
     public class HallControllerTests
     {
         private readonly Mock<IHall> _mockRepo;
