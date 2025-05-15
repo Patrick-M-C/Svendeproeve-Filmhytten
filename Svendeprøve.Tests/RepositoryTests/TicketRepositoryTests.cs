@@ -19,7 +19,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public TicketRepositoryTests()
         {
             _options = new DbContextOptionsBuilder<Databasecontext>()
-                .UseInMemoryDatabase(Guid.NewGuid().ToString())
+                .UseInMemoryDatabase(databaseName: "TicketRepositoryTests")
                 .Options;
 
             _context = new Databasecontext(_options);
@@ -30,10 +30,22 @@ namespace Svendeprøve.Tests.RepositoryTests
         public async Task GetAll_ShouldReturnAllTickets()
         {
             await _context.Database.EnsureDeletedAsync();
-            _context.Ticket.AddRange(
-                new Ticket { Price = 100, UserId = 1, SeatId = 1, IsCanceled = false },
-                new Ticket { Price = 150, UserId = 2, SeatId = 2, IsCanceled = true }
-            );
+
+            _context.Ticket.Add(new Ticket
+            {
+                Price = 100,
+                UserId = 1,
+                SeatId = 1,
+                IsCanceled = false,
+            });
+            _context.Ticket.Add(new Ticket
+            {
+                Price = 100,
+                UserId = 1,
+                SeatId = 1,
+                IsCanceled = false,                
+            });
+
             await _context.SaveChangesAsync();
 
             var result = await _ticketRepo.getAll();
@@ -43,17 +55,103 @@ namespace Svendeprøve.Tests.RepositoryTests
         }
 
         [Fact]
+        public async Task GetAllIncludeUserAndSeat_ShouldReturnAllTickets()
+        {
+            await _context.Database.EnsureDeletedAsync();
+
+            _context.Ticket.Add(new Ticket { Price = 100, UserId = 1, SeatId = 1, IsCanceled = false,
+                User = new User
+                {
+                    Name = "kap",
+                    Email = "b@mail.com",
+                    PhoneNumber = "12121212",
+                    Password = "Password2",
+                    IsAdmin = false
+                },
+                Seat = new Seat
+                {
+                    Row = 1,
+                    SeatNumber = 1,
+                    IsReserved = false,
+                    HallId = 1
+                }
+            });
+            _context.Ticket.Add(new Ticket
+            {
+                Price = 100,
+                UserId = 1,
+                SeatId = 1,
+                IsCanceled = false,
+                User = new User
+                {
+                    Name = "Alice",
+                    Email = "test@mail.com",
+                    PhoneNumber = "12341234",
+                    Password = "Password1",
+                    IsAdmin = true
+                },
+                Seat = new Seat
+                {
+                    Row = 1,
+                    SeatNumber = 2,
+                    IsReserved = false,
+                    HallId = 1
+                }
+            });
+
+            await _context.SaveChangesAsync();
+
+            var result = await _ticketRepo.getAllIncludeUserAndSeat();
+
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count);
+        }
+
+        [Fact]
         public async Task GetById_ShouldReturnTicket_WhenExists()
         {
             await _context.Database.EnsureDeletedAsync();
-            var ticket = new Ticket { Price = 120, UserId = 1, SeatId = 1, IsCanceled = false };
+            var ticket = new Ticket { Id = 1, Price = 120, UserId = 1, SeatId = 1, IsCanceled = false };
             _context.Ticket.Add(ticket);
             await _context.SaveChangesAsync();
 
             var result = await _ticketRepo.getById(ticket.Id);
 
             Assert.NotNull(result);
+            Assert.Equal(1, result.Id);
             Assert.Equal(120, result.Price);
+        }
+        
+        [Fact]
+        public async Task GetByIdIncludeUserAndSeat_ShouldReturnTicket_WhenExists()
+        {
+            await _context.Database.EnsureDeletedAsync();
+            var ticket = new Ticket { Id = 1, Price = 120, UserId = 1, SeatId = 1, IsCanceled = false,
+                User = new User
+                {
+                    Name = "Alice",
+                    Email = "test@mail.com",
+                    PhoneNumber = "12341234",
+                    Password = "Password1",
+                    IsAdmin = true
+                },
+                Seat = new Seat
+                {
+                    Row = 1,
+                    SeatNumber = 2,
+                    IsReserved = false,
+                    HallId = 1
+                }
+            };
+            _context.Ticket.Add(ticket);
+            await _context.SaveChangesAsync();
+
+            var result = await _ticketRepo.getByIdIncludeUserAndSeat(ticket.Id);
+
+            Assert.NotNull(result);
+            Assert.Equal(1, result.Id);
+            Assert.Equal(120, result.Price);
+            Assert.Equal("Alice", result.User.Name);
         }
 
         [Fact]

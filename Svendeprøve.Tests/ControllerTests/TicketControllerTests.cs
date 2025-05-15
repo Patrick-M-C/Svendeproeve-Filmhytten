@@ -45,7 +45,7 @@ namespace Svendeprøve.Tests.ControllerTests
             var ticket = new Ticket { Id = 1, Price = 100 };
             _mockRepo.Setup(r => r.getById(1)).ReturnsAsync(ticket);
 
-            var result = await _controller.GetTicket(1);
+            var result = await _controller.GetTicketById(1);
 
             var ok = Assert.IsType<OkObjectResult>(result.Result);
             var returned = Assert.IsType<Ticket>(ok.Value);
@@ -57,7 +57,7 @@ namespace Svendeprøve.Tests.ControllerTests
         {
             _mockRepo.Setup(r => r.getById(99)).ReturnsAsync((Ticket)null);
 
-            var result = await _controller.GetTicket(99);
+            var result = await _controller.GetTicketById(99);
 
             Assert.IsType<NotFoundResult>(result.Result);
         }

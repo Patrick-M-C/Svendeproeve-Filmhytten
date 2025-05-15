@@ -31,8 +31,40 @@ namespace Svendeprøve.Api.Controllers
             //    .ToListAsync();
         }
 
+        [HttpGet("IncludeUserAndSeat")]
+        public async Task<ActionResult<IEnumerable<Ticket>>> GetTicketsIncludeUserAndSeat()
+        {
+            var tickets = await _ticketRepo.getAll();
+            return Ok(tickets);
+            //return await _context.Ticket
+            //    .Include(t => t.User)
+            //    .Include(t => t.Seat)
+            //    //.Include(t => t.Screening)
+            //    .ToListAsync();
+        }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<Ticket>> GetTicket(int id)
+        public async Task<ActionResult<Ticket>> GetTicketById(int id)
+        {
+            var ticket = await _ticketRepo.getById(id);
+            if (ticket == null)
+                return NotFound();
+
+            return Ok(ticket);
+            //var ticket = await _context.Ticket
+            //    .Include(t => t.User)
+            //    .Include(t => t.Seat)
+            //    //.Include(t => t.Screening)
+            //    .FirstOrDefaultAsync(t => t.Id == id);
+
+            //if (ticket == null)
+            //    return NotFound();
+
+            //return Ok(ticket);
+        }
+
+        [HttpGet("IncludeUserAndSeat/{id}")]
+        public async Task<ActionResult<Ticket>> GetTicketByIdIncludeUserAndSeat(int id)
         {
             var ticket = await _ticketRepo.getById(id);
             if (ticket == null)
@@ -58,7 +90,7 @@ namespace Svendeprøve.Api.Controllers
                 return BadRequest("Ticket cannot be null.");
 
             var created = await _ticketRepo.create(ticket);
-            return CreatedAtAction(nameof(GetTicket), new { id = created.Id }, created);
+            return CreatedAtAction(nameof(GetTicketById), new { id = created.Id }, created);
             //_context.Ticket.Add(ticket);
             //await _context.SaveChangesAsync();
 
