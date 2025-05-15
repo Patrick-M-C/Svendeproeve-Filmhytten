@@ -5,6 +5,12 @@
 
 @inject HallService HallService
 
+@* 
+    Blazor-komponent til visning af detaljer om en specifik biografsal.
+    Henter og viser saldata baseret på et ID, der sendes via URL'en.
+    Viser en indlæsningsbesked, indtil data er hentet fra HallService.
+*@
+
 <h3>Hall Details</h3>
 
 @if (hall == null)

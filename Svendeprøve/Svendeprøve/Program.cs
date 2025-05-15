@@ -8,9 +8,17 @@ using Svendeprøve.Components.Account;
 using Svendeprøve.Components.Services;
 using Svendeprøve.Data;
 
+// Her bliver alle vores servicer registreret og sat til hvilken service som de API kald som de skal håndtere så som:
+//AuthenticationState
+//MovieService
+//SeatService
+//HallService
+//serService
+// CORS politik med AnyOrigin, Method og Header
+// og vores HTTPClient til vores API kald
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddRazorComponents()
 .AddInteractiveServerComponents()
 .AddInteractiveWebAssemblyComponents();
@@ -55,7 +63,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
 
-// Register CORS service
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAllOrigins", builder =>
@@ -68,7 +75,6 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
@@ -84,17 +90,13 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
-// Apply the CORS policy
 app.UseCors("AllowAllOrigins");
 
 app.MapRazorComponents<App>()
 .AddInteractiveServerRenderMode()
 .AddInteractiveWebAssemblyRenderMode();
 
-// Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
-
-// Opret Admin rolle og bruger ved opstart
 
 
 app.Run();

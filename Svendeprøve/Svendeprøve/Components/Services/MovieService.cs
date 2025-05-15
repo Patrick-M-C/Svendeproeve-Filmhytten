@@ -5,6 +5,8 @@
     using System.Threading.Tasks;
     using Svendeprøve.Components.Models;
 
+    // Serviceklasse til håndtering af API-kald relateret til vores film.
+    // Udfører HTTP-anmodninger for at hente film fra vores API via det HTTP Call.
     public class MovieService
     {
         private readonly HttpClient _httpClient;
@@ -19,10 +21,8 @@
         {
             try
             {
-                // Sender en GET-anmodning til API'et for at hente film
                 var response = await _httpClient.GetFromJsonAsync<List<Movie>>("api/Movie");
 
-                // Hvis der ikke er nogen data, returneres en tom liste
                 if (response == null)
                 {
                     return new List<Movie>();
@@ -32,9 +32,8 @@
             }
             catch (Exception ex)
             {
-                // Håndter fejl (kan f.eks. logge fejlen her)
                 Console.WriteLine($"Fejl ved hentning af film: {ex.Message}");
-                return new List<Movie>(); // Returner en tom liste ved fejl
+                return new List<Movie>();
             }
         }
         public async Task<Movie> GetMovieByIdAsync(int id)

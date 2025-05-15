@@ -12,7 +12,11 @@
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
 
-<!-- Bestil Billet knap øverst til højre -->
+@* 
+    Blazor-komponent til visning af vores movie page hvor den tager 100 film fra TMDBs database og viser dem.
+    Viser en simple liste over 100 film med blandet udgivelses dato.
+    Bruger CSS til at danne vores liste over film og sætte en film plakat ind og sætte releases date på.
+*@
 <div class="booking-button-container">
     <button type="button" class="btn btn-primary btn-lg" @onclick="GoToBooking">Bestil Billet</button>
 </div>

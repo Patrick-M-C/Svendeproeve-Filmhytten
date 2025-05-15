@@ -5,6 +5,12 @@
 
 @inject MovieService MovieService
 
+@* 
+    Blazor-komponentet til visning af af description om en specifik film.
+    Henter og viser filmdata baseret på et ID, der sendes via URL'en.
+    Viser en indlæsningsbesked, indtil data er hentet fra MovieService.
+*@
+
 <h3>Movie Details</h3>
 
 @if (movie == null)
@@ -21,7 +27,7 @@ else
 }
 
 @code {
-    [Parameter] public int Id { get; set; } // Henter {Id} fra URL
+    [Parameter] public int Id { get; set; }
 
     private Movie movie;
 
@@ -29,7 +35,6 @@ else
     {
         try
         {
-            // Hent detaljerne for den valgte film
             movie = await MovieService.GetMovieByIdAsync(Id);
         }
         catch (Exception ex)

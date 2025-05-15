@@ -2,8 +2,10 @@
 
 namespace Svendeprøve.Components.Models
 {
+    // Frontend-DTO for vores film class i vores Blazor-applikation.
+    // Repræsenterer vores film class med data til visning i UI´en og deserialiser API-dataen.
     public class Movie
-    {
+    {    
         public int Id { get; set; }
         public string Title { get; set; }
         public List<Genre>? Genres { get; set; }
