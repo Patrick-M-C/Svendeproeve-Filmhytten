@@ -11,8 +11,8 @@ using Svendeprøve.Repo.DatabaseContext;
 namespace Svendeprøve.Repo.Migrations
 {
     [DbContext(typeof(Databasecontext))]
-    [Migration("20250507172342_newdata")]
-    partial class newdata
+    [Migration("20250515145958_data1")]
+    partial class data1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -147,7 +147,6 @@ namespace Svendeprøve.Repo.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SeatCount")
@@ -418,6 +417,9 @@ namespace Svendeprøve.Repo.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsAdmin")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -439,6 +441,7 @@ namespace Svendeprøve.Repo.Migrations
                         {
                             Id = 1,
                             Email = "kasper@mail.com",
+                            IsAdmin = false,
                             Name = "Kasper",
                             Password = "placeholder1",
                             PhoneNumber = "123456789"
@@ -447,6 +450,7 @@ namespace Svendeprøve.Repo.Migrations
                         {
                             Id = 2,
                             Email = "sofia@mail.com",
+                            IsAdmin = true,
                             Name = "Sofia",
                             Password = "placeholder2",
                             PhoneNumber = "987654321"

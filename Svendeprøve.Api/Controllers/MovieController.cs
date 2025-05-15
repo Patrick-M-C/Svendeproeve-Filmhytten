@@ -4,6 +4,19 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Api.Controllers
 {
+    /*
+     * MovieController
+     * 
+     * Giver adgang til filmrelaterede data via API-kald. 
+     * Film data hentes fra TMDB API via et repository, 
+     * hvilket sikrer en tydelig adskillelse mellem logik og datahåndtering.
+     * 
+     * Funktionalitet:
+     * - Returnerer en liste af alle tilgængelige film.
+     * - Muliggør opslag af en enkelt film ved hjælp af dens ID.
+     */
+
+
     [ApiController]
     [Route("api/[controller]")]
     public class MovieController : ControllerBase

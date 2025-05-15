@@ -7,6 +7,21 @@ using System.Net.Http.Json;
 
 namespace Svendeprøve.Repo.Repository
 {
+    /*
+     * MovieRepository
+     * 
+     * Repository-klassen står for kommunikation med The Movie Database (TMDB) API og håndtering af filmdata.
+     * Den implementerer IMovie-interfacet og bruger en HttpClient til at hente og formatere filmoplysninger.
+     * 
+     * Funktionalitet:
+     * - Henter op til 100 film fra TMDB API via paginerede kald.
+     * - Mapper genre-ID'er til genrenavne ud fra en lokal database for at sikre konsistens.
+     * - Returnerer detaljer om enkeltfilm inkl. titel, genre(r), beskrivelse, udgivelsesdato og billede.
+     * 
+     * Repositoryet anvender konfigureret API-nøgle og understøtter caching af genredata for bedre performance.
+     * Det sikrer en klar adskillelse mellem dataadgang og forretningslogik, hvilket gør systemet mere testbart og vedligeholdelsesvenligt.
+     */
+
     public class MovieRepository : IMovie
     {
         private readonly HttpClient _httpClient;

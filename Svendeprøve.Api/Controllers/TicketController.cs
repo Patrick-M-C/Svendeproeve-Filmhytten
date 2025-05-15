@@ -4,6 +4,18 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Api.Controllers
 {
+    /*
+ * TicketController
+ * 
+ * Behandler operationer omkring billetter. Implementerer ITicket for at holde controlleren enkel og uafhængig af datalagringsdetaljer.
+ * 
+ * Funktionalitet:
+ * - Hent alle billetter, både med og uden relaterede bruger- og sædeoplysninger.
+ * - Hent specifik billet baseret på ID.
+ * - Opret nye billetter.
+ * - Opdater eksisterende billetter.
+ * - Slet billetter.
+ */
     [ApiController]
     [Route("api/[controller]")]
     public class TicketController : Controller
@@ -26,7 +38,7 @@ namespace Svendeprøve.Api.Controllers
         [HttpGet("IncludeUserAndSeat")]
         public async Task<ActionResult<IEnumerable<Ticket>>> GetTicketsIncludeUserAndSeat()
         {
-            var tickets = await _ticketRepo.getAll();
+            var tickets = await _ticketRepo.getAllIncludeUserAndSeat();
             return Ok(tickets);            
         }
 
@@ -47,7 +59,7 @@ namespace Svendeprøve.Api.Controllers
             if (ticket == null)
                 return NotFound();
 
-            return Ok(ticket);            
+            return Ok(ticket);      
         }
 
         [HttpPost]

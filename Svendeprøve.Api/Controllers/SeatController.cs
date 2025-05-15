@@ -4,6 +4,18 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Api.Controllers
 {
+    /*
+     * SeatController
+     * 
+     * Styrer API-endpoints til sæder i biograf salene. Ved at benytte ISeat sikres en god tilgang til datahåndtering.
+     * 
+     * Funktionalitet:
+     * - Hent alle sæder eller specifikke sæder via ID eller sal.
+     * - Opret nye sæder enkeltvis eller i større antal ad gangen.
+     * - Filtrér sæder baseret på deres reserveringsstatus.
+     * - Opdater eksisterende sæder eller slet dem efter behov.
+     */
+
     [ApiController]
     [Route("api/[controller]")]
     public class SeatController : ControllerBase
@@ -52,19 +64,6 @@ namespace Svendeprøve.Api.Controllers
             var createdSeats = await _seatRepo.CreateMultipleAsync(rows, seatsPerRow, hallId);
             return Ok(createdSeats);
         }
-        //[HttpPost("multiple")]
-        //public async Task<ActionResult<IEnumerable<Seat>>> CreateMultipleSeats(
-        //[FromQuery] int rows,
-        //[FromQuery] int seatsPerRow,
-        //[FromQuery] int hallId)
-        //{
-        //    if (rows <= 0 || seatsPerRow <= 0)
-        //        return BadRequest("Rows and seats per row must be greater than 0.");
-
-        //    var seats = await _seatRepo.CreateMultipleAsync(rows, seatsPerRow, hallId);
-
-        //    return Ok(seats);
-        //}
 
         [HttpGet("isReserved")]
         public async Task<ActionResult<IEnumerable<Seat>>> GetReservedSeats()

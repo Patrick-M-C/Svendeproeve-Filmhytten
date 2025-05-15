@@ -4,6 +4,21 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Api.Controllers
 {
+     /*
+     * HallController
+     * 
+     * Denne controller håndtere API-forespørgsler for Hall)
+     * Den benytter repository-interfacet IHall til at abstrahere dataadgang og sikre en ren adskillelse 
+     * mellem controllerlogik og datalagring.
+     * 
+     * Funktionalitet:
+     * - Hent alle sale med og uden tilknyttede sæder.
+     * - Hent én specifik sal (med eller uden sæder) baseret på ID.
+     * - Opret en ny sal i databasen.
+     * - Opdater en eksisterende sal.
+     * - Slet en sal. 
+     */
+
     [ApiController]
     [Route("api/[controller]")]
     public class HallController : ControllerBase

@@ -5,6 +5,21 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Repo.Repository
 {
+    /*
+     * SeatRepository
+     * 
+     * Denne repository-klasse håndterer al datatilgang relateret til sæder (Seat).
+     * Den implementerer ISeat-interfacet og benytter Entity Framework til at foretage databaseoperationer.
+     * 
+     * Funktionalitet:
+     * - Henter alle sæder eller specifikke sæder baseret på ID eller HallId.
+     * - Opretter et enkelt sæde eller flere sæder samtidig (fx ved oprettelse af en hel sal).
+     * - Opdaterer eksisterende sædeinformationer.
+     * - Sletter sæder fra databasen.
+     * - Validerer om et sæde er reserveret via `IsSeatReservedAsync`. 
+     *
+     */
+
     public class SeatRepository : ISeat
     {
         Databasecontext context;

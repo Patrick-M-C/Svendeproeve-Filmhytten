@@ -11,6 +11,18 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Tests.ControllerTests
 {
+    /*
+     * TicketControllerTests
+     * 
+     * Testklasse for TicketController, hvor der anvendes en mock af ITicket
+     * for at isolere og verificere controllerens funktionalitet uden afhængighed af databasen.
+     * 
+     * Funktionalitet der testes:
+     * - Hent alle billetter og enkelte billetter baseret på ID.
+     * - Opret en ny billet og håndter fejl ved null-input.
+     * - Opdater eksisterende billetter (inkl. mismatch eller ikke fundet).
+     * - Slet billetter og håndter tilfælde hvor billetten ikke findes.
+     */
     public class TicketControllerTests
     {
         private readonly Mock<ITicket> _mockRepo;

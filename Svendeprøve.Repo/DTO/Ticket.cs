@@ -4,6 +4,9 @@ namespace Svendeprøve.Repo.DTO
 {
     public class Ticket
     {
+        // Billet med pris og reference til bruger og sæde.
+        // Forbindelserne UserId og SeatId bruges til at skabe relationer i databasen.
+        // IsCanceled markerer om billetten er aktiv eller annulleret.
         public int Id { get; set; }
         public int Price { get; set; }
         

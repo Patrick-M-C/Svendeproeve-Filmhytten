@@ -5,6 +5,20 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Repo.Repository
 {
+    /*
+     * TicketRepository
+     * 
+     * Ansvarlig for al datatilgang relateret til billetter (Ticket). 
+     * Implementerer ITicket-interfacet og anvender Entity Framework til at håndtere CRUD-operationer mod databasen.
+     * 
+     * Funktionalitet:
+     * - Hent alle billetter eller en specifik billet baseret på ID.
+     * - Inkluderer relaterede data som tilknyttet bruger og sæde, når det ønskes.
+     * - Opretter, opdaterer og sletter billetter i databasen.
+     * 
+     * Ved at adskille dataadgangslogik fra controllerlaget, sikres en mere testbar og vedligeholdelsesvenlig arkitektur.
+     */
+
     public class TicketRepository : ITicket
     {
         Databasecontext context;

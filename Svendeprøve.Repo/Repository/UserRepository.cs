@@ -10,6 +10,18 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Repo.Repository
 {
+    /*
+    * UserRepository
+    * 
+    * Står for al datatilgang relateret til Users i systemet.
+    * Implementerer IUser-interfacet og bruger Entity Framework Core til at håndtere forespørgsler og ændringer i databasen.
+    * 
+    * Funktionalitet:
+    * - Hent alle brugere eller en enkelt bruger baseret på ID, navn eller e-mail.
+    * - Understøtter også hentning af brugere med tilknyttede billetter.
+    * - Opret, opdater og slet brugere i databasen.
+    * 
+    */
     public class UserRepository : IUser
     {
         private readonly Databasecontext _context;        

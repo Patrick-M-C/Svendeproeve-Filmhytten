@@ -10,6 +10,19 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Tests.RepositoryTests
 {
+    /*
+     * SeatRepositoryTests
+     * 
+     * Enhedstest af SeatRepository ved brug af InMemoryDatabase. Disse tests sikrer, at repository-logikken
+     * fungerer korrekt uafhængigt af en rigtig database.
+     * 
+     * Dækker følgende funktioner:
+     * - Hentning af alle sæder og specifikke sæder via ID og HallId.
+     * - Validering af reserveringsstatus og håndtering af ugyldige forespørgsler.
+     * - Oprettelse af enkelte og flere sæder ad gangen.
+     * - Sletning og opdatering af sædeinformationer.
+     *
+     */
     public class SeatRepositoryTests
     {
         private readonly DbContextOptions<Databasecontext> _options;

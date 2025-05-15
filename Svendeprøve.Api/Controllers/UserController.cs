@@ -4,6 +4,19 @@ using Svendeprøve.Repo.Interface;
 
 namespace Svendeprøve.Api.Controllers
 {
+    /*
+ * UserController
+ * 
+ * Giver adgang til API-endpoints relateret til brugeradministration. Funktionerne dækker oprettelse,
+ * opdatering, sletning og forespørgsler på brugere – både alene og sammen med deres billetter.
+ * 
+ * Funktionalitet:
+ * - Hent alle brugere (med og uden billetter)
+ * - Find bruger baseret på ID, navn eller email
+ * - Opret ny bruger
+ * - Rediger eksisterende bruger
+ * - Slet bruger
+ */
     [ApiController]
     [Route("api/[controller]")]
     public class UserController : Controller

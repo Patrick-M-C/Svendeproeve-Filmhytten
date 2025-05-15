@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// CORS-konfiguration for at tillade adgang fra frontend (localhost:7149)
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy", builder => builder
@@ -14,36 +15,39 @@ builder.Services.AddCors(options =>
         .AllowAnyMethod()
         .AllowCredentials());
 });
-// Add services to the container.
 
-builder.Services.AddControllers();
+// Controller-konfiguration med JSON-cyklusbeskyttelse
+builder.Services.AddControllers().AddJsonOptions(x =>
+    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
+// Swagger/OpenAPI
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+// Repository-registrering og Dependency Injection
+// Her registreres alle repositories via deres respektive interfaces. 
 builder.Services.AddScoped<IMovie, MovieRepository>();
 builder.Services.AddScoped<IHall, HallRepository>();
 builder.Services.AddScoped<ISeat, SeatRepository>();
 builder.Services.AddScoped<IUser, UserRepository>();
 builder.Services.AddScoped<ITicket, TicketRepository>();
 
-
+// MovieRepository anvender eksternt HTTP-kald for TMDB API
 builder.Services.AddHttpClient<IMovie, MovieRepository>();
+
+// Gør konfigurationen tilgængelig i DI-containeren
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 
-
-
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+// Tilføj databasekonfiguration
 builder.Services.AddDbContext<Databasecontext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddControllers().AddJsonOptions(
-    x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
-
 var app = builder.Build();
 
+// Anvend CORS-politik
 app.UseCors("CorsPolicy");
 
-// Configure the HTTP request pipeline.
+// Middleware-pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

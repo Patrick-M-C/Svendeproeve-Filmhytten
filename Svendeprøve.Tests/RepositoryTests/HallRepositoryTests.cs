@@ -10,6 +10,19 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Tests.RepositoryTests
 {
+    /*
+     * HallRepositoryTests
+     * 
+     * Integrationstest for HallRepository, som benytter en InMemoryDatabase til at validere funktionaliteten
+     * uden afhængighed af en rigtig database. Dette sikrer hurtige og pålidelige tests.
+     * 
+     * Testdækning inkluderer:
+     * - Hentning af alle sale og enkeltstående sale (med og uden sæder).
+     * - Validering af datatyper og tomme resultater.
+     * - Oprettelse af sale, herunder validering af genereret ID og fejl ved null.
+     * - Opdatering af sædeantal og navne.
+     * - Sletning, inkl. kontrol af fjernelse og håndtering af ugyldige ID'er.
+     */
     public class HallRepositoryTests
     {
         private readonly DbContextOptions<Databasecontext> _options;
