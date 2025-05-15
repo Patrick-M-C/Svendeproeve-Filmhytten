@@ -3,6 +3,12 @@
 @using Svendeprøve.Components.Services
 @inject MovieService MovieService
 
+@* 
+    Blazor-komponentet til visning af vores liste af film hentet fra API´en af.
+    Henter og viser filmdata baseret på et ID, der sendes via URL'en.
+    Viser en indlæsningsbesked, indtil data er hentet fra MovieService.
+*@
+
 <h3>Movies</h3>
 @if (movies == null)
 {

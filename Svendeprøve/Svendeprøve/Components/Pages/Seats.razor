@@ -5,6 +5,12 @@
 @inject HallService HallService
 @inject NavigationManager NavigationManager
 
+@* 
+    Blazor-komponent til visning af vores seat page hvor den tager 100 film fra TMDBs database og viser dem.
+    Viser en simple graphic over vores seat placeringer i salen.
+    Bruger CSS til at lave en firkanted graphic med alle sæderne i den givende sal.
+*@
+
 <h1>Sæder i hal</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))

@@ -4,6 +4,12 @@
 @inject NavigationManager NavigationManager
 @implements IDisposable
 
+@* 
+    Blazor-komponent til visning af en bekræftelsesside efter billetkøb.
+    Viser en takbesked og omdirigerer automatisk til forsiden efter 5 sekunder.
+    Bruger en timer til nedtælling og CSS til centrering af teksen på siden.
+*@
+
 <div class="confirmation-container">
     <h1 class="text-center">Køb af Billet bekræftede, Tak fordi købte igennem Filmhytten</h1>
     <p class="text-center">Du vil blive omdirigeret om @remainingSeconds sekunder...</p>
@@ -15,9 +21,9 @@
 
     protected override void OnInitialized()
     {
-        timer = new Timer(1000); // Opdater hvert sekund
+        timer = new Timer(1000);
         timer.Elapsed += async (sender, e) => await OnTimerElapsed();
-        timer.AutoReset = true; // Kør gentagne gange
+        timer.AutoReset = true;
         timer.Start();
     }
 
@@ -30,19 +36,17 @@
             timer?.Stop();
             await InvokeAsync(() =>
             {
-                NavigationManager.NavigateTo("/movies");
+                NavigationManager.NavigateTo("/");
             });
         }
         else
         {
-            // Opdater UI med resterende sekunder
             await InvokeAsync(StateHasChanged);
         }
     }
 
     public void Dispose()
     {
-        // Rengør timeren
         timer?.Stop();
         timer?.Dispose();
     }

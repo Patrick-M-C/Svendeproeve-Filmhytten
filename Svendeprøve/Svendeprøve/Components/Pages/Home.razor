@@ -6,10 +6,16 @@
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
 
+@* 
+    Blazor-komponent til visning af vores home page og 5 kørende film i din nærmeste biograf.
+    Viser 5 film på forsiden som du kan bestille billet til.
+    Bruger forsiden med CSS så den displayer 5 film taget tilfældigt fra vores liste af 100 og viser dem med en bestil knap nede under.
+*@
+
 <PageTitle>Home</PageTitle>
 
 <h1 class="text-center mt-4">Velkommen til Filmhytten!</h1>
-<p class="text-center">Her kan du se 5 tilfældige film i din nærmeste biograf</p>
+<p class="text-center">Her kan du se 5 populære film i din nærmeste biograf</p>
 
 @if (movies == null)
 {
@@ -23,7 +29,6 @@ else
 {
     <div class="container">
         <div class="row row-cols-1 row-cols-md-3 g-4">
-            <!-- Film 1 -->
             <div class="col">
                 <div class="card h-100">
                     <img src="@movies[0].poster_path" class="card-img-top" alt="@movies[0].Title" style="max-height: 400px; object-fit: cover;" />
@@ -35,7 +40,6 @@ else
                 </div>
             </div>
 
-            <!-- Film 2 -->
             <div class="col">
                 <div class="card h-100">
                     <img src="@movies[1].poster_path" class="card-img-top" alt="@movies[1].Title" style="max-height: 400px; object-fit: cover;" />
@@ -47,7 +51,6 @@ else
                 </div>
             </div>
 
-            <!-- Film 3 -->
             <div class="col">
                 <div class="card h-100">
                     <img src="@movies[2].poster_path" class="card-img-top" alt="@movies[2].Title" style="max-height: 400px; object-fit: cover;" />
@@ -59,7 +62,6 @@ else
                 </div>
             </div>
 
-            <!-- Film 4 -->
             <div class="col">
                 <div class="card h-100">
                     <img src="@movies[3].poster_path" class="card-img-top" alt="@movies[3].Title" style="max-height: 400px; object-fit: cover;" />
@@ -98,7 +100,6 @@ else
 
     private void NavigateToBooking(int movieId)
     {
-        // Naviger til Seats med hallId=1
         NavigationManager.NavigateTo("/Hall");
     }
 }
