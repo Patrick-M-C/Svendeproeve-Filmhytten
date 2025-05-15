@@ -20,6 +20,11 @@ namespace Svendeprøve.Repo.Repository
 
         public async Task<List<Ticket>> getAll()
         {
+            return await context.Ticket.ToListAsync();
+        }
+        
+        public async Task<List<Ticket>> getAllIncludeUserAndSeat()
+        {
             return await context.Ticket
                 .Include(t => t.User)
                 .Include(t => t.Seat)
@@ -27,6 +32,11 @@ namespace Svendeprøve.Repo.Repository
         }
 
         public async Task<Ticket> getById(int id)
+        {
+            return await context.Ticket.FirstOrDefaultAsync(t => t.Id == id);
+        }
+        
+        public async Task<Ticket> getByIdIncludeUserAndSeat(int id)
         {
             return await context.Ticket
                 .Include(t => t.User)

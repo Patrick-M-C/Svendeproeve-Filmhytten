@@ -31,8 +31,8 @@ namespace Svendeprøve.Tests.RepositoryTests
         {
             await _context.Database.EnsureDeletedAsync();
 
-            _context.User.Add(new User { Id = 1, Name = "Alice", Email = "a@mail.com", PhoneNumber = "12341234", Password = "Password1" });
-            _context.User.Add(new User { Id = 2, Name = "kap", Email = "b@mail.com", PhoneNumber = "12121212", Password = "Password2" });
+            _context.User.Add(new User { Id = 1, Name = "Alice", Email = "a@mail.com", PhoneNumber = "12341234", Password = "Password1", IsAdmin = true});
+            _context.User.Add(new User { Id = 2, Name = "kap", Email = "b@mail.com", PhoneNumber = "12121212", Password = "Password2", IsAdmin = false });
             
             await _context.SaveChangesAsync();
 
@@ -48,11 +48,7 @@ namespace Svendeprøve.Tests.RepositoryTests
             await _context.Database.EnsureDeletedAsync();
             var user = new User
             {
-                Name = "Alice",
-                Email = "test@mail.com",
-                PhoneNumber = "12341234",
-                Password = "Password1",
-                Tickets = new List<Ticket> { new Ticket { Price = 100, IsCanceled = false } }
+                Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1", IsAdmin = true, Tickets = new List<Ticket> { new Ticket { Price = 100, IsCanceled = false } }
             };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
@@ -68,7 +64,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public async Task GetByIdAsync_ShouldReturnUser_WhenExists()
         {
             await _context.Database.EnsureDeletedAsync();
-            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1" };
+            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1", IsAdmin = true };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -92,7 +88,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public async Task GetByNameAsync_ShouldReturnUser_WhenExists()
         {
             await _context.Database.EnsureDeletedAsync();
-            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1" };
+            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1", IsAdmin = true };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -106,7 +102,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public async Task GetByEmailAsync_ShouldReturnUser_WhenExists()
         {
             await _context.Database.EnsureDeletedAsync();
-            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1" };
+            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1", IsAdmin = true };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -120,7 +116,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public async Task CreateAsync_ShouldAddUser()
         {
             await _context.Database.EnsureDeletedAsync();
-            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1" };
+            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1", IsAdmin = true };
 
             var result = await _userRepo.CreateAsync(user);
 
@@ -141,7 +137,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public async Task UpdateAsync_ShouldModifyUser_WhenExists()
         {
             await _context.Database.EnsureDeletedAsync();
-            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1" };
+            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1", IsAdmin = true };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 
@@ -158,7 +154,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public async Task UpdateAsync_ShouldThrow_WhenUserNotFound()
         {
             await _context.Database.EnsureDeletedAsync();
-            var user = new User { Id = 99, Name = "testtest", Email = "test1@mail.com", PhoneNumber = "88888887", Password = "passwordtest" };
+            var user = new User { Id = 99, Name = "testtest", Email = "test1@mail.com", PhoneNumber = "88888887", Password = "passwordtest", IsAdmin = false };
 
             await Assert.ThrowsAsync<KeyNotFoundException>(() => _userRepo.UpdateAsync(user));
         }
@@ -167,7 +163,7 @@ namespace Svendeprøve.Tests.RepositoryTests
         public async Task DeleteAsync_ShouldRemoveUser_WhenExists()
         {
             await _context.Database.EnsureDeletedAsync();
-            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1" };
+            var user = new User { Name = "Alice", Email = "test@mail.com", PhoneNumber = "12341234", Password = "Password1", IsAdmin = false };
             _context.User.Add(user);
             await _context.SaveChangesAsync();
 

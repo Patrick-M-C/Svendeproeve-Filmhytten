@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Svendeprøve.Client.Pages;
 using Svendeprøve.Components;
 using Svendeprøve.Components.Account;
-using Svendeprøve.Components.Services;
 using Svendeprøve.Data;
 
 // Her bliver alle vores servicer registreret og sat til hvilken service som de API kald som de skal håndtere så som:
