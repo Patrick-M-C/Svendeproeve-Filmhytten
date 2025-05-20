@@ -8,6 +8,20 @@
 @inject UserService UserService
 @inject NavigationManager Navigation
 
+@* 
+    Blazor-komponent til admin-panelet i vores Blazor-applikation.
+    Kun tilgængelig for brugere med "Admin"-rollen.
+    Giver mulighed for at oprette, redigere og slette brugere via UserService.
+    Viser en liste over eksisterende brugere og en formular til oprettelse af nye brugere.
+
+    Opret nye bruger: (i rækkefælger)
+    Viser succes- eller fejlmeddelelser
+    Validerer inputfelter baseret på datamodellen
+    Inputfelt til adgangskode
+    Viser valideringsfejl for adgangskode
+    Udløser oprettelse af bruger
+
+*@
 <h3>Admin Panel</h3>
 
 @if (!string.IsNullOrEmpty(message))

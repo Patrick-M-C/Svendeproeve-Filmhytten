@@ -6,6 +6,20 @@
 @inject UserService UserService
 @inject NavigationManager Navigation
 
+@* 
+    Blazor-komponent til redigering af en brugers oplysninger i vores Blazor-applikation.
+    Kun tilgængelig for brugere med "Admin"-rollen.
+    Giver mulighed for at opdatere en brugers email og navigere tilbage til admin-panelet.
+
+    Update user: (i rækkefølge)
+    Validerer inputfelter baseret på datamodellen
+    Viser en oversigt over valideringsfejl
+    Inputfelt til brugerens email
+    Gemmer ændringer til brugeren
+    Navigerer tilbage til admin-panelet
+    Viser succes- eller fejlmeddelelser
+*@
+
 <h3>Rediger bruger</h3>
 
 @if (user == null)
