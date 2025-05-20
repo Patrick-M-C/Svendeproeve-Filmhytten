@@ -1,26 +1,56 @@
 ﻿@page "/Confirmation"
-@using System.Timers
 @rendermode InteractiveServer
+
+@using System.Timers
+@using Svendeprøve.Components.Models
+@using Svendeprøve.Components.Services
 @inject NavigationManager NavigationManager
+@inject MovieService MovieService
+@inject HallService HallService
 @implements IDisposable
 
 @* 
     Blazor-komponent til visning af en bekræftelsesside efter billetkøb.
-    Viser en takbesked og omdirigerer automatisk til forsiden efter 5 sekunder.
-    Bruger en timer til nedtælling og CSS til centrering af teksen på siden.
+    Viser valgt film og sal, en takbesked og omdirigerer automatisk til forsiden efter 5 sekunder.
 *@
 
 <div class="confirmation-container">
-    <h1 class="text-center">Køb af Billet bekræftede, Tak fordi købte igennem Filmhytten</h1>
+    <h1 class="text-center">Tak for dit køb af billet til Minecraft Movie, i hal nummer 1, Nyd forstillingen</h1>
+    @if (!string.IsNullOrEmpty(selectedMovieTitle) && !string.IsNullOrEmpty(selectedHallName))
+    {
+        <p class="text-center">Du har booket <strong>@selectedMovieTitle</strong> i sal <strong>@selectedHallName</strong>.</p>
+    }
     <p class="text-center">Du vil blive omdirigeret om @remainingSeconds sekunder...</p>
 </div>
 
 @code {
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? movieId { get; set; }
+
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public int? hallId { get; set; }
+
     private int remainingSeconds = 5;
     private Timer? timer;
 
-    protected override void OnInitialized()
+    private string? selectedMovieTitle;
+    private string? selectedHallName;
+
+    protected override async Task OnInitializedAsync()
     {
+        if (movieId.HasValue)
+        {
+            var movie = await MovieService.GetMovieByIdAsync(movieId.Value);
+            selectedMovieTitle = movie?.Title;
+        }
+        if (hallId.HasValue)
+        {
+            var hall = await HallService.GetHallByIdAsync(hallId.Value);
+            selectedHallName = hall?.Name;
+        }
+
         timer = new Timer(1000);
         timer.Elapsed += async (sender, e) => await OnTimerElapsed();
         timer.AutoReset = true;
@@ -34,10 +64,7 @@
         if (remainingSeconds <= 0)
         {
             timer?.Stop();
-            await InvokeAsync(() =>
-            {
-                NavigationManager.NavigateTo("/");
-            });
+            await InvokeAsync(() => NavigationManager.NavigateTo("/"));
         }
         else
         {
@@ -71,5 +98,6 @@
     p {
         font-size: 1.2rem;
         color: #666;
+        margin: 5px 0;
     }
 </style>

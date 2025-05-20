@@ -5,12 +5,6 @@
 @inject HallService HallService
 @inject NavigationManager NavigationManager
 
-@* 
-    Blazor-komponent til visning af vores seat page hvor den tager 100 film fra TMDBs database og viser dem.
-    Viser en simple graphic over vores seat placeringer i salen.
-    Bruger CSS til at lave en firkanted graphic med alle sæderne i den givende sal.
-*@
-
 <h1>Sæder i hal</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))
@@ -28,7 +22,6 @@ else
         <div class="hall">
             <h3>@hall.Name (@hall.SeatCount sæder)</h3>
             <div class="screen"></div>
-            <!-- Række- og sædenumre -->
             <div class="seat-labels">
                 <div class="row-labels">
                     @foreach (var row in seats.Select(s => s.Row).Distinct().OrderBy(r => r))
@@ -39,15 +32,17 @@ else
                 <div class="seats" style="grid-template-columns: repeat(@GetColumns(seats), 30px);">
                     @foreach (var seat in seats.OrderBy(s => s.Row).ThenBy(s => s.SeatNumber))
                     {
-                        <div class="seat @(seat.IsReserved ? "reserved" : "available")"
-                             title="Række @seat.Row, Sæde @seat.SeatNumber">
+                        <div class="seat @(GetSeatCssClass(seat))"
+                             title="Række @seat.Row, Sæde @seat.SeatNumber"
+                             @onclick="() => ToggleSeatSelection(seat)">
+                            @seat.SeatNumber
                         </div>
                     }
                 </div>
             </div>
             <div class="seat-info">
-                <p>@seats.Count(s => !s.IsReserved) ud af @hall.SeatCount sæder er tilgængelige.</p>
-                <button class="btn btn-primary" @onclick="ConfirmBooking">Bekræft Booking</button>
+                <p>@(selectedSeats.Count) sæder valgt ud af @seats.Count(s => !s.IsReserved) tilgængelige.</p>
+                <button class="btn btn-primary" @onclick="ConfirmBooking" disabled="@(selectedSeats.Count == 0)">Bekræft Booking</button>
             </div>
         </div>
     </div>
@@ -59,6 +54,8 @@ else
     private string? errorMessage;
     private int? hallId;
 
+    private HashSet<Seat> selectedSeats = new();
+
     protected override async Task OnInitializedAsync()
     {
         try
@@ -69,7 +66,6 @@ else
             if (query["hallId"] == null || !int.TryParse(query["hallId"], out var parsedHallId))
             {
                 errorMessage = "Ingen hal valgt. Angiv en hal.";
-                Console.WriteLine(errorMessage);
                 return;
             }
             hallId = parsedHallId;
@@ -78,75 +74,62 @@ else
             if (hall == null)
             {
                 errorMessage = "Ingen haller fundet i databasen.";
-                Console.WriteLine(errorMessage);
                 seats = new List<Seat>();
                 return;
             }
 
-            seats = hall.Seats;
-            if (seats == null || !seats.Any())
+            seats = hall.Seats ?? new List<Seat>();
+            if (!seats.Any())
             {
                 errorMessage = $"Ingen sæder fundet for hal {hall.Name}.";
-                Console.WriteLine(errorMessage);
             }
-            else
-            {
-                Console.WriteLine($"Loaded hall: {hall.Name} (ID: {hall.Id}) with {seats.Count} seats, {seats.Count(s => !s.IsReserved)} available");
-            }
-        }
-        catch (HttpRequestException ex)
-        {
-            errorMessage = $"Kunne ikke hente sæder: {ex.Message}";
-            Console.WriteLine(errorMessage);
-            seats = new List<Seat>();
         }
         catch (Exception ex)
         {
-            errorMessage = $"Uventet fejl: {ex.Message}";
-            Console.WriteLine(errorMessage);
+            errorMessage = $"Fejl ved hentning af sæder: {ex.Message}";
             seats = new List<Seat>();
-        }
-    }
-
-    private async Task ConfirmBooking()
-    {
-        try
-        {
-            if (hall == null)
-            {
-                errorMessage = "Ingen hal valgt.";
-                Console.WriteLine(errorMessage);
-                return;
-            }
-
-            if (seats == null || !seats.Any(s => !s.IsReserved))
-            {
-                errorMessage = "Ingen tilgængelige sæder i denne hal.";
-                Console.WriteLine(errorMessage);
-                return;
-            }
-
-            Console.WriteLine($"Booking confirmed for hall ID: {hall.Id}, 1 seat reserved");
-
-            errorMessage = null;
-            StateHasChanged();
-
-            // Naviger til Confirmation-siden
-            NavigationManager.NavigateTo("/Confirmation");
-            errorMessage = null;
-            StateHasChanged();
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Fejl ved bekræftelse af booking: {ex.Message}";
-            Console.WriteLine(errorMessage);
-            StateHasChanged();
         }
     }
 
     private int GetColumns(List<Seat> seats)
     {
         return seats.Any() ? seats.GroupBy(s => s.Row).Max(g => g.Count()) : 1;
+    }
+
+    private string GetSeatCssClass(Seat seat)
+    {
+        if (seat.IsReserved)
+            return "reserved";
+
+        if (selectedSeats.Contains(seat))
+            return "selected";
+
+        return "available";
+    }
+
+    private void ToggleSeatSelection(Seat seat)
+    {
+        if (seat.IsReserved)
+            return; // Kan ikke vælge reserverede sæder
+
+        if (selectedSeats.Contains(seat))
+            selectedSeats.Remove(seat);
+        else
+            selectedSeats.Add(seat);
+    }
+
+    private void ConfirmBooking()
+    {
+        if (selectedSeats.Count == 0)
+        {
+            errorMessage = "Vælg venligst mindst ét sæde før booking.";
+            return;
+        }
+
+        // Her kan du implementere logik til at gemme de valgte sæder eller sende dem videre
+
+        // For demo navigerer vi bare til Confirmation-siden
+        NavigationManager.NavigateTo("/Confirmation");
     }
 }
 
@@ -196,7 +179,12 @@ else
         width: 30px;
         height: 30px;
         border: 1px solid #ccc;
+        line-height: 30px;
+        cursor: pointer;
+        user-select: none;
         transition: all 0.2s ease;
+        text-align: center;
+        font-weight: bold;
     }
 
         .seat.available {
@@ -205,6 +193,12 @@ else
 
         .seat.reserved {
             background-color: #ff5555; /* Reserverede sæder (rød) */
+            cursor: not-allowed;
+        }
+
+        .seat.selected {
+            background-color: #007bff; /* Valgte sæder (blå) */
+            color: white;
         }
 
     .seat-info {
@@ -222,6 +216,12 @@ else
         .btn-primary:hover {
             background-color: #0056b3;
             border-color: #0056b3;
+        }
+
+        .btn-primary:disabled {
+            background-color: #cccccc;
+            border-color: #cccccc;
+            cursor: not-allowed;
         }
 
     .text-danger {

@@ -6,11 +6,6 @@
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
 
-@* 
-    Blazor-komponent til visning af detaljer for Minecraft Movie, inklusive titel, genre og beskrivelse.
-    Indeholder også en knap til at bestille billetter og en tilbage-knap til hjemmesiden.
-*@
-
 <PageTitle>Minecraft Movie</PageTitle>
 
 @if (movie == null)
@@ -43,8 +38,15 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var movies = await MovieService.GetMoviesAsync();
-        movie = movies.FirstOrDefault();
+        try
+        {
+            var movies = await MovieService.GetMoviesAsync();
+            movie = movies.FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Fejl ved hentning af film: " + ex.Message);
+        }
     }
 
     private void NavigateToBooking()
@@ -91,8 +93,4 @@ else
             background-color: #5a6268;
             border-color: #5a6268;
         }
-
-    .text-danger {
-        color: #dc3545;
-    }
 </style>
