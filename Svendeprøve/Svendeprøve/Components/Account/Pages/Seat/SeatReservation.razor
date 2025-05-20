@@ -2,6 +2,12 @@
 @using Svendeprøve.Components.Models
 @inject HttpClient Http
 
+@* 
+    Blazor-komponentet til at reservation af sæder i vores biografsal.
+    Viser en sædeoversigt, hvor brugeren kan vælge ledige sæder og bekræfte en reservation.
+    Henter sædedata fra en API og sender reservationer tilbage til backend.
+*@
+
 <h3>Seats Reservation</h3>
 
 <div class="seat-layout">
@@ -42,7 +48,7 @@
 	{
 		try
 		{
-			seats = await Http.GetFromJsonAsync<List<Seat>>("https://localhost:7009/api/Seat");
+			seats = await Http.GetFromJsonAsync<List<Seat>>("https://localhost:7149/api/Seat");
 			GroupSeatsByRow();
 		}
 		catch(Exception ex)
@@ -73,7 +79,7 @@
 
 		try
 		{
-			var response = await Http.PostAsJsonAsync("https://localhost:7009/api/Seat/reserve", selectedSeats);
+			var response = await Http.PostAsJsonAsync("https://localhost:7149/api/Seat/reserve", selectedSeats);
 			if (response.IsSuccessStatusCode)
 			{
 				Console.WriteLine("Reservation successful!");

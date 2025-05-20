@@ -12,6 +12,12 @@
 @inject HallService HallService
 @inject NavigationManager NavigationManager
 
+@* 
+    Blazor-komponent til visning af vores haller som er registreret i vores database.
+    Viser grafik over vores nuværende haller, hvor du kan booke sæder i.
+    Bruger CSS til at customize og style vores tabeller.
+*@
+
 <h1>Vælg en sal</h1>
 
 @if (halls == null)
@@ -20,7 +26,7 @@
 }
 else if (!halls.Any() && errorMessage != null)
 {
-    <p>Fejl: @errorMessage</p>
+    <p class="text-center text-danger">Fejl: @errorMessage</p>
 }
 else
 {
@@ -29,10 +35,10 @@ else
         {
             <div class="hall" @onclick="() => NavigateToSeats(hall.Id)">
                 <div class="screen"></div>
-                <div class="seats" style="grid-template-columns: repeat(@GetColumns(hall.Seats), 15px);">
+                <div class="seats" style="grid-template-columns: repeat(@GetColumns(hall.Seats), 30px); justify-content: center;">
                     @foreach (var seat in hall.Seats.OrderBy(s => s.Row).ThenBy(s => s.SeatNumber))
                     {
-                        <div class="seat @(seat.IsReserved ? "reserved" : "")"></div>
+                        <div class="seat @(seat.IsReserved ? "reserved" : "available")"></div>
                     }
                 </div>
                 <div class="hall-label">@hall.Name (@hall.SeatCount sæder)</div>
@@ -88,6 +94,9 @@ else
         text-align: center;
         cursor: pointer;
         transition: transform 0.2s;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
         .hall:hover {
@@ -95,7 +104,7 @@ else
         }
 
     .screen {
-        width: 80px;
+        width: 240px;
         height: 10px;
         background-color: #666;
         margin-bottom: 10px;
@@ -103,18 +112,28 @@ else
 
     .seats {
         display: grid;
-        gap: 2px;
+        gap: 5px;
+        justify-content: center;
+        margin-bottom: 10px;
     }
 
     .seat {
-        width: 10px;
-        height: 10px;
+        width: 30px;
+        height: 30px;
         background-color: #90EE90;
         border: 1px solid #ccc;
     }
 
+        .seat.reserved {
+            background-color: #ff5555;
+        }
+
+        .seat.available {
+            background-color: #90EE90;
+        }
+
     .hall-label {
-        margin-top: 5px;
         font-family: Arial, sans-serif;
+        margin-top: 5px;
     }
 </style>

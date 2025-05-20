@@ -6,10 +6,15 @@
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
 
+@* 
+    Blazor-komponent til visning af vores home page og 5 kørende film i din nærmeste biograf.
+    Viser de 5 første film på én linje, kortene er større.
+*@
+
 <PageTitle>Home</PageTitle>
 
 <h1 class="text-center mt-4">Velkommen til Filmhytten!</h1>
-<p class="text-center">Her kan du se 5 tilfældige film i din nærmeste biograf</p>
+<p class="text-center">Her kan du se 5 populære film i din nærmeste biograf</p>
 
 @if (movies == null)
 {
@@ -17,71 +22,31 @@
 }
 else if (movies.Count < 5)
 {
-    <p class="text-center text-danger">Ikke nogen film tilgængelige. @movies.Count film fundet.</p>
+    <p class="text-center text-danger">Ikke nok film tilgængelige. @movies.Count film fundet.</p>
 }
 else
 {
     <div class="container">
-        <div class="row row-cols-1 row-cols-md-3 g-4">
-            <!-- Film 1 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="@movies[0].poster_path" class="card-img-top" alt="@movies[0].Title" style="max-height: 400px; object-fit: cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@movies[0].Title</h5>
-                        <p class="card-text">@movies[0].overview</p>
-                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[0].Id)">Bestil Billet</button>
+        <div class="row row-cols-5 g-3 justify-content-center">
+            @foreach (var movie in movies.Take(5))
+            {
+                <div class="col">
+                    <div class="card h-100 film-card">
+                        <img src="@movie.poster_path" class="card-img-top" alt="@movie.Title" />
+                        <div class="card-body p-2 text-center">
+                            <h6 class="card-title mb-2">@movie.Title</h6>
+                            @if (movie == movies.First())
+                            {
+                                <button class="btn btn-sm btn-primary" @onclick="NavigateToMinecraftMovie">Se Detaljer</button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-primary" @onclick="() => NavigateToMovieDetail(movie.Id)">Se Detaljer</button>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Film 2 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="@movies[1].poster_path" class="card-img-top" alt="@movies[1].Title" style="max-height: 400px; object-fit: cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@movies[1].Title</h5>
-                        <p class="card-text">@movies[1].overview</p>
-                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[1].Id)">Bestil Billet</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Film 3 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="@movies[2].poster_path" class="card-img-top" alt="@movies[2].Title" style="max-height: 400px; object-fit: cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@movies[2].Title</h5>
-                        <p class="card-text">@movies[2].overview</p>
-                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[2].Id)">Bestil Billet</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Film 4 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="@movies[3].poster_path" class="card-img-top" alt="@movies[3].Title" style="max-height: 400px; object-fit: cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@movies[3].Title</h5>
-                        <p class="card-text">@movies[3].overview</p>
-                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[3].Id)">Bestil Billet</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Film 5 -->
-            <div class="col">
-                <div class="card h-100">
-                    <img src="@movies[4].poster_path" class="card-img-top" alt="@movies[4].Title" style="max-height: 400px; object-fit: cover;" />
-                    <div class="card-body">
-                        <h5 class="card-title">@movies[4].Title</h5>
-                        <p class="card-text">@movies[4].overview</p>
-                        <button class="btn btn-primary" @onclick="() => NavigateToBooking(movies[4].Id)">Bestil Billet</button>
-                    </div>
-                </div>
-            </div>
+            }
         </div>
     </div>
 }
@@ -91,15 +56,17 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var allMovies = await MovieService.GetMoviesAsync();
-        var random = new Random();
-        movies = allMovies.OrderBy(x => random.Next()).Take(5).ToList();
+        movies = await MovieService.GetMoviesAsync();
     }
 
-    private void NavigateToBooking(int movieId)
+    private void NavigateToMovieDetail(int movieId)
     {
-        // Naviger til Seats med hallId=1
-        NavigationManager.NavigateTo("/Hall");
+        NavigationManager.NavigateTo($"/Movie/{movieId}");
+    }
+
+    private void NavigateToMinecraftMovie()
+    {
+        NavigationManager.NavigateTo("/MinecraftMovie");
     }
 }
 
@@ -108,49 +75,29 @@ else
         padding: 20px;
     }
 
-    .card {
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        transition: box-shadow 0.2s ease;
+    .film-card {
+        max-width: 220px;
+        margin: 0 auto;
     }
 
-        .card:hover {
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
     .card-img-top {
+        height: 300px;
+        object-fit: cover;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
     }
 
     .card-body {
-        padding: 15px;
+        padding: 1rem;
     }
 
     .card-title {
-        font-size: 1.25rem;
-        margin-bottom: 10px;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
     }
 
-    .card-text {
-        font-size: 1rem;
-        color: #555;
-        margin-bottom: 15px;
-    }
-
-    .btn-primary {
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
-
-    .text-danger {
-        color: #dc3545; /* Bootstrap rød farve til fejl */
+    .btn-sm {
+        font-size: .9rem;
+        padding: .4rem .7rem;
     }
 </style>
