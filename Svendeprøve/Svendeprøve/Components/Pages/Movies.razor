@@ -12,12 +12,31 @@
 @inject MovieService MovieService
 @inject NavigationManager NavigationManager
 
-<!-- Bestil Billet knap øverst til højre -->
+@* 
+    Blazor-komponent til visning af vores movie page, hvor den tager 100 film fra TMDBs database og viser dem.
+    Indeholder et søgefelt til at filtrere film baseret på titler, der starter med det indtastede bogstav/streng.
+    Listen opdateres i realtid, når der skrives i søgefeltet.
+    Viser en simpel liste over film med blandet udgivelsesdato og en fremhævningsfunktion for valgte film.
+    Bruger CSS til at danne vores liste over film og sætte en filmplakat ind og vise udgivelsesdato.
+*@
+
 <div class="booking-button-container">
     <button type="button" class="btn btn-primary btn-lg" @onclick="GoToBooking">Bestil Billet</button>
 </div>
 
 <h2 class="text-center mb-4">Filmoversigt</h2>
+
+<div class="container mb-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Søg efter film (f.eks. 'B' for titler, der starter med B)"
+                       @bind="SearchQuery" @bind:event="oninput" />
+                <button class="btn btn-outline-secondary" @onclick="ClearSearch">Ryd</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -27,6 +46,10 @@
 @if (pagedMovies == null)
 {
     <p class="text-center">Indlæser film...</p>
+}
+else if (pagedMovies.Count == 0)
+{
+    <p class="text-center text-danger">Ingen film fundet, der matcher søgningen.</p>
 }
 else
 {
@@ -54,6 +77,17 @@ else
     private List<Movie> pagedMovies = new();
     private int? selectedMovieId = null;
     private string? errorMessage = null;
+    private string _searchQuery = "";
+
+    private string SearchQuery
+    {
+        get => _searchQuery;
+        set
+        {
+            _searchQuery = value;
+            UpdateFilteredMovies();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,12 +104,38 @@ else
         }
     }
 
+    private void UpdateFilteredMovies()
+    {
+        if (allMovies == null)
+        {
+            pagedMovies = new List<Movie>();
+            return;
+        }
+
+        if (string.IsNullOrEmpty(_searchQuery))
+        {
+            pagedMovies = allMovies;
+        }
+        else
+        {
+            pagedMovies = allMovies
+                .Where(m => m.Title.StartsWith(_searchQuery, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
+        StateHasChanged();
+    }
+
+    private void ClearSearch()
+    {
+        SearchQuery = "";
+    }
+
     private void HighlightMovie(int movieId)
     {
         try
         {
-            selectedMovieId = movieId; // Sæt den valgte film
-            errorMessage = null; // Ryd eventuelle fejlmeddelelser
+            selectedMovieId = movieId;
+            errorMessage = null;
             Console.WriteLine($"Selected movie ID: {movieId}");
             StateHasChanged();
         }
@@ -102,8 +162,8 @@ else
 
             Console.WriteLine($"Navigating to /Hall with movie ID: {selectedMovieId}");
             NavigationManager.NavigateTo("/Hall");
-            selectedMovieId = null; // Nulstil highlight efter navigation
-            errorMessage = null; // Ryd eventuelle fejlmeddelelser
+            selectedMovieId = null;
+            errorMessage = null;
             StateHasChanged();
         }
         catch (Exception ex)
@@ -165,5 +225,13 @@ else
 
     .text-danger {
         color: #dc3545; /* Bootstrap rød farve til fejlmeddelelser */
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        font-size: 16px;
     }
 </style>
