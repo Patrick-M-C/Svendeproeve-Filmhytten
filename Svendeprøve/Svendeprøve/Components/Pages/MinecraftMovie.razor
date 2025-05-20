@@ -1,4 +1,4 @@
-﻿@page "/Movie/{Id:int}"
+﻿@page "/MinecraftMovie"
 @rendermode InteractiveServer
 
 @using Svendeprøve.Components.Models
@@ -7,11 +7,11 @@
 @inject NavigationManager NavigationManager
 
 @* 
-    Blazor-komponent til visning af detaljer for en specifik film, inklusive titel, genre og beskrivelse.
+    Blazor-komponent til visning af detaljer for Minecraft Movie, inklusive titel, genre og beskrivelse.
     Indeholder også en knap til at bestille billetter og en tilbage-knap til hjemmesiden.
 *@
 
-<PageTitle>@(movie?.Title ?? "Film Detaljer")</PageTitle>
+<PageTitle>Minecraft Movie</PageTitle>
 
 @if (movie == null)
 {
@@ -39,14 +39,12 @@ else
 }
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
-
     private Movie? movie;
 
     protected override async Task OnInitializedAsync()
     {
-        movie = await MovieService.GetMovieByIdAsync(Id);
+        var movies = await MovieService.GetMoviesAsync();
+        movie = movies.FirstOrDefault();
     }
 
     private void NavigateToBooking()
