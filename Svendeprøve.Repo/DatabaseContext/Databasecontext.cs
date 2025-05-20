@@ -8,28 +8,15 @@ using System.Threading.Tasks;
 
 namespace Svendeprøve.Repo.DatabaseContext
 {
-    /*
-     * DatabaseContext
-     * 
-     * Denne klasse repræsenterer systemets databasekonfiguration og styrer forbindelsen mellem applikationen og databasen via Entity Framework Core.
-     * Den definerer DbSet for de centrale entiteter i systemet, såsom Hall, Seat, User, Ticket og Genre.
-     * 
-     * I metoden OnModelCreating seed'es initiale data til databasen, hvilket muliggør test og demonstration uden manuel dataindsætning.
-     * Dette inkluderer:
-     * - Genrer til film.
-     * - Brugere med forskellige roller.
-     * - Billetter med relation til brugere og sæder.
-     * - Haller og deres tilhørende sæder.
-     * 
-     */
     public class Databasecontext : DbContext
     {
         public Databasecontext(DbContextOptions<Databasecontext> options) : base(options) { }
+        public DbSet<Genre> Genre { get; set; }
         public DbSet<Hall> Hall { get; set; }
         public DbSet<Seat> Seat { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Ticket> Ticket { get; set; }
-        public DbSet<Genre> Genre { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -94,9 +81,8 @@ namespace Svendeprøve.Repo.DatabaseContext
                     new Seat { Id = 14, Row = 1, SeatNumber = 1, IsReserved = true, HallId = 3 },
                     new Seat { Id = 15, Row = 1, SeatNumber = 2, IsReserved = false, HallId = 3 },
                     new Seat { Id = 16, Row = 2, SeatNumber = 3, IsReserved = false, HallId = 3 },
-                    new Seat { Id = 17, Row = 2, SeatNumber = 4, IsReserved = false, HallId = 3 }
-                );
+                    new Seat { Id = 17, Row = 2, SeatNumber = 4, IsReserved = false, HallId = 3 });
         }
-
     }
+    
 }
