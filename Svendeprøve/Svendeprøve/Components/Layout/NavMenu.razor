@@ -4,14 +4,11 @@
 @inject IJSRuntime JS
 @inject AuthenticationStateProvider AuthStateProvider
 
-//Her er vores navigation menu hvor alle vores sider og links til vores sider ligger, f.eks. vores 
-<div class="nav-item px-3">
-    <NavLink class="nav-link" href="Movies">
-        <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Movies
-    </NavLink>
-</div>
-
-//Den viser det som et klikbart link og teksten Movies, og sender en over til /Movies siden, det samme sker for Home, Halls, Seats og Login
+@* 
+    Blazor-komponent til visning af forsiden.
+    Viser vores forside med de 5 første film på listen.
+    Har også en købsknap i tilfælde af at kunne ville bestille til de film.
+*@
 
 <div class="top-row ps-3 navbar navbar-light">
     <div class="container-fluid">
