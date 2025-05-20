@@ -5,7 +5,7 @@
 @inject HallService HallService
 @inject NavigationManager NavigationManager
 
-<h1>Sæder i hal</h1>
+<h1>Sæder i sal @hall?.Name</h1>
 
 @if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -20,7 +20,13 @@ else
 {
     <div class="hall-container">
         <div class="hall">
-            <h3>@hall.Name (@hall.SeatCount sæder)</h3>
+            <h3>
+                @hall.Name (@seats.Count sæder i alt)
+                @if (hall.Id == 2 || hall.Id == 3)
+                {
+                    <span>- Ledige: @seats.Count(s => !s.IsReserved), Reserverede: @seats.Count(s => s.IsReserved)</span>
+                }
+            </h3>
             <div class="screen"></div>
             <div class="seat-labels">
                 <div class="row-labels">
@@ -126,14 +132,13 @@ else
             return;
         }
 
-        // Her kan du implementere logik til at gemme de valgte sæder eller sende dem videre
-
-        // For demo navigerer vi bare til Confirmation-siden
-        NavigationManager.NavigateTo("/Confirmation");
+        // Naviger til Confirmation-siden med info
+        NavigationManager.NavigateTo($"/Confirmation?hallId={hall.Id}");
     }
 }
 
 <style>
+    /* (CSS unchanged) */
     .hall-container {
         display: flex;
         justify-content: center;
@@ -188,16 +193,16 @@ else
     }
 
         .seat.available {
-            background-color: #90EE90; /* Ledige sæder (grøn) */
+            background-color: #90EE90;
         }
 
         .seat.reserved {
-            background-color: #ff5555; /* Reserverede sæder (rød) */
+            background-color: #ff5555;
             cursor: not-allowed;
         }
 
         .seat.selected {
-            background-color: #007bff; /* Valgte sæder (blå) */
+            background-color: #007bff;
             color: white;
         }
 
@@ -225,6 +230,6 @@ else
         }
 
     .text-danger {
-        color: #dc3545; /* Bootstrap rød farve til fejl */
+        color: #dc3545;
     }
 </style>
